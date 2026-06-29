@@ -21,6 +21,7 @@ Dokumenten är organiserade i tre lager: vad vi bygger, hur vi bygger det och va
 | --- | --- |
 | [prestudy.md](prestudy.md) | Övergripande förstudie: bakgrund, syfte, målgrupp, MVP-koncept och konkurrensanalys. |
 | [project-plan_requirements.md](project-plan_requirements.md) | Kravmatris (MoSCoW), utvecklingsfaser och teststrategi. |
+| [user-stories.md](user-stories.md) | Epics och user stories med Given/When/Then-acceptanskriterier härledda från kraven. |
 | [ux-ui_vision.md](ux-ui_vision.md) | Designfilosofi, kärnvyer, komponentkatalog, personas och designprompter. |
 
 ### Lager 2 — Arkitektur och kvalitet (hur)
@@ -42,7 +43,7 @@ Dokumenten är organiserade i tre lager: vad vi bygger, hur vi bygger det och va
 ## Hur du läser förstudien
 
 * **Är du ny i projektet?** Börja med [prestudy.md](prestudy.md) och [glossary.md](glossary.md). Gå sedan vidare till [ux-ui_vision.md](ux-ui_vision.md) för en känsla av slutprodukten.
-* **Ska du bygga?** Läs [architecture.md](architecture.md), [non-functional-requirements.md](non-functional-requirements.md) och [project-plan_requirements.md](project-plan_requirements.md) i den ordningen.
+* **Ska du bygga?** Läs [architecture.md](architecture.md), [non-functional-requirements.md](non-functional-requirements.md) och [project-plan_requirements.md](project-plan_requirements.md) i den ordningen. Backloggen för utvecklingsarbetet finns i [user-stories.md](user-stories.md) och som GitHub-issues.
 * **Granskar du säkerhet eller juridik?** Läs [gdpr.md](gdpr.md) och [dpia.md](dpia.md) tillsammans. Riskregistret i [risk-register.md](risk-register.md) kompletterar bilden.
 * **Granskar du finansiering eller styrning?** [cost-estimate.md](cost-estimate.md), [risk-register.md](risk-register.md) och [open-decisions.md](open-decisions.md) ger underlag för go/no-go-beslut.
 
