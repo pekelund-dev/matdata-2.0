@@ -43,7 +43,7 @@ Dokumenten är organiserade i tre lager: vad vi bygger, hur vi bygger det och va
 ## Hur du läser förstudien
 
 * **Är du ny i projektet?** Börja med [prestudy.md](prestudy.md) och [glossary.md](glossary.md). Gå sedan vidare till [ux-ui_vision.md](ux-ui_vision.md) för en känsla av slutprodukten.
-* **Ska du bygga?** Läs [architecture.md](architecture.md), [non-functional-requirements.md](non-functional-requirements.md) och [project-plan_requirements.md](project-plan_requirements.md) i den ordningen. Backloggen för utvecklingsarbetet finns i [user-stories.md](user-stories.md) och som GitHub-issues.
+* **Ska du bygga?** Läs [architecture.md](architecture.md), [non-functional-requirements.md](non-functional-requirements.md) och [project-plan_requirements.md](project-plan_requirements.md) i den ordningen. Backloggen för utvecklingsarbetet finns i [user-stories.md](user-stories.md) och som GitHub-issues (kan skapas via [scripts/create-github-issues.sh](scripts/create-github-issues.sh), se [scripts/README.md](scripts/README.md)).
 * **Granskar du säkerhet eller juridik?** Läs [gdpr.md](gdpr.md) och [dpia.md](dpia.md) tillsammans. Riskregistret i [risk-register.md](risk-register.md) kompletterar bilden.
 * **Granskar du finansiering eller styrning?** [cost-estimate.md](cost-estimate.md), [risk-register.md](risk-register.md) och [open-decisions.md](open-decisions.md) ger underlag för go/no-go-beslut.
 
