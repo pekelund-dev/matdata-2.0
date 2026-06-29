@@ -114,7 +114,7 @@ När användaren letar efter en specifik vara, till exempel \"Blandfärs\".
     * **Varningsflagg för krympflation (K16):** Om systemet ser att EAN-koden är densamma men vikten plötsligt gått från 500 g till 450 g och priset är detsamma, visas en tydlig varningsikon: *\"Varning: Förpackningsstorleken har minskat, vilket ger ett högre kilopris!\"*
     * **Bästa köpmånad:** Historisk data kan visa, om användaren laddat upp data länge: *\"Du brukar köpa denna billigast i januari.\"*
 
-### 2.4 Tematiska analysvyer (\"Moms-kollen\", K14, K15)
+### 2.4 Tematiska analysvyer ("Moms-kollen", K15)
 Systemet bör ha stöd för tillfälliga eller tematiska vyer baserade på aktuella händelser i samhället för att driva engagemang. Ett perfekt exempel för appens lansering är momssänkningen på livsmedel.
 
 * **Effekten av momssänkningen:** En dedikerad insiktsvy där användaren får svar på frågan *\"Sänkte min butik verkligen priserna?\"*

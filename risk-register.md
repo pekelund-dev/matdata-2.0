@@ -74,10 +74,10 @@ Detta dokument samlar identifierade risker i Matdata 2.0. Riskerna kategoriseras
 
 ### T1 — ICA/Kivra ändrar PDF-layout
 * **Beskrivning:** Parsern är hårt knuten till ICA:s nuvarande PDF-layout. Layoutändringar bryter parsningen utan förvarning.
-* **Trigger:** Plötslig ökning av kvitton i status `FAILED`, eller canary-testet (avsnitt 4.5 i projektplanen) larmar.
+* **Trigger:** Plötslig ökning av kvitton i status `FAILED`, eller canary-testet (avsnitt 6.5 i projektplanen) larmar.
 * **Mitigering:**
-    * Versionera parsern med tydlig butik + format-version (krav i projektplan 4.4).
-    * Schemalagd canary-test mot referens-PDF varje vecka (projektplan 4.5).
+    * Versionera parsern med tydlig butik + format-version (krav i projektplan 6.4).
+    * Schemalagd canary-test mot referens-PDF varje vecka (projektplan 6.5).
     * Larmregel i GCP Cloud Monitoring som triggar när failure-andelen passerar tröskel.
     * Återhämtningsplan: snabb hotfix-process där en uppdaterad parser kan deployas inom 24 h utan att gå via vanlig release-cykel.
 * **Restrisk:** Användare upplever att enstaka kvitton inte processas under tiden patch tas fram.
@@ -210,7 +210,7 @@ Detta dokument samlar identifierade risker i Matdata 2.0. Riskerna kategoriseras
 
 ### O1 — Single developer (key person dependency)
 * **Beskrivning:** Endast en utvecklare på projektet. Sjukdom eller bortavaro stoppar all utveckling.
-* **Trigger:** Projektledaren blir oavailable.
+* **Trigger:** Projektledaren blir otillgänglig.
 * **Mitigering:**
     * Förstudien (detta dokumentset) är skriven så att en ny utvecklare snabbt kan komma in.
     * All kod, infra och dokumentation finns publikt i Git.

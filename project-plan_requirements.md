@@ -61,9 +61,9 @@ Metoden MoSCoW används för att tydliggöra prioriteringar för första version
 
 | ID | Krav | Referens |
 | --- | --- | --- |
-| K14 | En öppen statistikvy där användare kan se global prisutveckling på varor baserat på aggregerad data. | [ux-ui_vision.md](ux-ui_vision.md) avsnitt 2.4 |
+| K14 | En öppen statistikvy där användare kan se global prisutveckling på varor baserat på aggregerad data. | [architecture.md](architecture.md) datamodell `GLOBAL_PRICE_POINTS`, [ux-ui_vision.md](ux-ui_vision.md) avsnitt 5.3 |
 | K15 | Analysvyn \"Moms-kollen\" för att jämföra priser före och efter ett specifikt datum. | [architecture.md](architecture.md) datamodell `RECEIPT_ITEMS.vat_rate` |
-| K16 | Detektions- och varningssystem för krympflation om förpackningsstorlek minskar men priset förblir detsamma. | [risk-register.md](risk-register.md) V3 |
+| K16 | Detektions- och varningssystem för krympflation om förpackningsstorlek minskar men priset förblir detsamma. | [ux-ui_vision.md](ux-ui_vision.md) avsnitt 2.3 |
 | K17 | Stöd för papperskvitton via OCR (Google Cloud Vision API eller Gemini Vision). | [cost-estimate.md](cost-estimate.md) (potentiell kostnadspost post-MVP) |
 | K20 | Stöd för ytterligare butiksformat (Coop, Hemköp, Willys) via ett plugin-baserat parser-system. | [risk-register.md](risk-register.md) V2 |
 
@@ -279,9 +279,9 @@ För att hålla kraven förankrade i övrig dokumentation används följande sp�
 | K11 | Komponentkatalog `/dev/components` | NFR-M5 | — | — | [ux-ui_vision.md](ux-ui_vision.md) §3 |
 | K12 | HTMX-polling | NFR-P3 | ADR-005 | [architecture.md](architecture.md) §2.2 | [ux-ui_vision.md](ux-ui_vision.md) §2.2 |
 | K13 | Crowdsourcing-motor | NFR-D3 | ADR-007 | [architecture.md](architecture.md) §5 | — |
-| K14 | Öppen statistikvy | — | — | — | [ux-ui_vision.md](ux-ui_vision.md) §2.4 |
+| K14 | Öppen statistikvy | — | — | datamodell `GLOBAL_PRICE_POINTS` | [ux-ui_vision.md](ux-ui_vision.md) §5.3 |
 | K15 | Moms-kollen | — | — | datamodell `vat_rate` | [ux-ui_vision.md](ux-ui_vision.md) §2.4 |
-| K16 | Krympflations-varning | — | — | — | [ux-ui_vision.md](ux-ui_vision.md) §2.4 |
+| K16 | Krympflations-varning | — | — | — | [ux-ui_vision.md](ux-ui_vision.md) §2.3 |
 | K17 | OCR-stöd | NFR-P2 | — | (post-MVP) | — |
 | K20 | Pluginbara parsers | — | — | (post-MVP) | — |
 
