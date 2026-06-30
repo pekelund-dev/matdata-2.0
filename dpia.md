@@ -1,168 +1,168 @@
 # Data Protection Impact Assessment (DPIA): Matdata 2.0
 
 **Version:** 1.0
-**Senast uppdaterad:** 2026-06-29
-**Status:** Förstudie klar för granskning
-**Ansvarig:** Dataskyddsansvarig (DPO eller motsvarande)
+**Last updated:** 2026-06-29
+**Status:** Pre-study ready for review
+**Responsible:** Data Protection Officer (DPO or equivalent)
 
-Detta dokument utgör en Data Protection Impact Assessment enligt GDPR Artikel 35. En DPIA krävs när behandlingen sannolikt leder till en hög risk för fysiska personers rättigheter och friheter, vilket är fallet eftersom Matdata 2.0 hanterar data som indirekt kan avslöja känsliga uppgifter enligt Artikel 9 (t.ex. hälsotillstånd genom köp av laktosfritt eller religion via halal-/kosher-produkter).
+This document constitutes a Data Protection Impact Assessment under GDPR Article 35. A DPIA is required when the processing is likely to result in a high risk to the rights and freedoms of natural persons, which is the case here because Matdata 2.0 handles data that may indirectly reveal sensitive information under Article 9 (e.g. health status through purchases of lactose-free products or religion via halal/kosher products).
 
-DPIA-dokumentet kompletterar [gdpr.md](gdpr.md) (strategin) och [risk-register.md](risk-register.md) (riskhanteringen). Tekniska detaljer i [architecture.md](architecture.md) och [non-functional-requirements.md](non-functional-requirements.md) refereras där det är relevant.
+The DPIA complements [gdpr.md](gdpr.md) (the strategy) and [risk-register.md](risk-register.md) (the risk management). Technical details in [architecture.md](architecture.md) and [non-functional-requirements.md](non-functional-requirements.md) are referenced where relevant.
 
-## Innehåll
-- [1. Behandling och syften](#behandling)
-- [2. Personuppgiftskategorier](#kategorier)
-- [3. Rättslig grund](#rattslig-grund)
-- [4. Mottagare och tredje parter](#mottagare)
-- [5. Tredjelandsöverföringar](#tredjeland)
-- [6. Lagringstid](#lagring)
-- [7. Riskbedömning](#risker)
-- [8. Mitigerande åtgärder](#mitigerande)
-- [9. Användarrättigheter (komplett tabell)](#rattigheter)
-- [10. Incidenthanteringsprocess](#incident)
-- [11. Slutsats och beslut](#slutsats)
-- [12. Revisionshistorik](#historik)
+## Contents
+- [1. Processing and purposes](#processing)
+- [2. Categories of personal data](#categories)
+- [3. Legal basis](#legal-basis)
+- [4. Recipients and third parties](#recipients)
+- [5. Third-country transfers](#third-country)
+- [6. Retention period](#retention)
+- [7. Risk assessment](#risks)
+- [8. Mitigating measures](#mitigating)
+- [9. User rights (complete table)](#rights)
+- [10. Incident handling process](#incident)
+- [11. Conclusion and decision](#conclusion)
+- [12. Revision history](#history)
 
-## 1. Behandling och syften <a name="behandling"></a>
+## 1. Processing and purposes <a name="processing"></a>
 
-Matdata 2.0 behandlar uppgifter i tre tydligt åtskilda processer:
+Matdata 2.0 processes data in three clearly separated processes:
 
-1. **Kontohantering och inloggning** — för att leverera tjänsten.
-2. **Kvittohantering (personlig prishistorik)** — för att låta användaren spåra sina utgifter.
-3. **Anonymiserad statistik (crowdsourcing)** — för att producera global prisstatistik. Frikopplad från användaren.
+1. **Account management and sign-in** — to deliver the service.
+2. **Receipt handling (personal price history)** — to let the user track their expenses.
+3. **Anonymised statistics (crowdsourcing)** — to produce global price statistics. Decoupled from the user.
 
-Sektionerna nedan ska läsas mot dessa tre processer.
+The sections below must be read against these three processes.
 
-## 2. Personuppgiftskategorier <a name="kategorier"></a>
+## 2. Categories of personal data <a name="categories"></a>
 
-| Kategori | Exempel på data | Process | Känslighet |
+| Category | Example data | Process | Sensitivity |
 | --- | --- | --- | --- |
-| Identifierare | E-postadress, OAuth subject-ID | Kontohantering | Normal |
-| Autentiseringsdata | Lösenordshash (BCrypt) | Kontohantering | Hög |
-| Tekniska data | IP-adress (loggar), session-cookie, user-agent | Kontohantering | Normal |
-| Inköpsdata (personlig) | Butik, datum, artikelnummer, produktnamn, pris, kvantitet | Kvittohantering | Hög (kan röja Art. 9-data) |
-| Originalkvitto | PDF som laddats upp | Kvittohantering | Hög |
-| Samtyckesregistreringar | Tidpunkt och valda alternativ för delning | Alla | Normal |
-| Aggregerad statistik | Artikelnummer, pris, ort, månad | Crowdsourcing | Anonymiserad (omfattas inte av GDPR) |
+| Identifiers | E-mail address, OAuth subject ID | Account management | Normal |
+| Authentication data | Password hash (BCrypt) | Account management | High |
+| Technical data | IP address (logs), session cookie, user agent | Account management | Normal |
+| Purchase data (personal) | Store, date, article number, product name, price, quantity | Receipt handling | High (may reveal Art. 9 data) |
+| Original receipt | Uploaded PDF | Receipt handling | High |
+| Consent records | Timestamp and chosen sharing options | All | Normal |
+| Aggregated statistics | Article number, price, city, month | Crowdsourcing | Anonymised (not covered by GDPR) |
 
-Inga särskilda kategorier av personuppgifter (Art. 9) samlas in *medvetet*. Vissa varor på ett kvitto kan dock implicit avslöja sådan information. Detta är skälet till denna DPIA.
+No special categories of personal data (Art. 9) are collected *intentionally*. Some items on a receipt can, however, implicitly reveal such information. That is the reason for this DPIA.
 
-## 3. Rättslig grund <a name="rattslig-grund"></a>
+## 3. Legal basis <a name="legal-basis"></a>
 
-| Process | Rättslig grund | Hänvisning |
+| Process | Legal basis | Reference |
 | --- | --- | --- |
-| Kontohantering och inloggning | Avtal (Art. 6.1.b) | Användaren skapar konto för att nyttja tjänsten |
-| Kvittohantering | Avtal (Art. 6.1.b) | Tjänstens kärnfunktion |
-| Crowdsourcing/global statistik | Samtycke (Art. 6.1.a) | Aktivt samtycke krävs (kryssruta, ej förvald) |
-| Säkerhetsloggar | Berättigat intresse (Art. 6.1.f) | Skydd mot missbruk, intrångsdetektion |
-| Audit-loggar för samtycke | Rättslig förpliktelse (Art. 6.1.c) | GDPR Art. 7.1 (bevisbörda) |
+| Account management and sign-in | Contract (Art. 6(1)(b)) | The user creates an account to use the service |
+| Receipt handling | Contract (Art. 6(1)(b)) | Core function of the service |
+| Crowdsourcing/global statistics | Consent (Art. 6(1)(a)) | Active consent required (checkbox, not pre-ticked) |
+| Security logs | Legitimate interest (Art. 6(1)(f)) | Protection against abuse, intrusion detection |
+| Audit logs for consent | Legal obligation (Art. 6(1)(c)) | GDPR Art. 7(1) (burden of proof) |
 
-## 4. Mottagare och tredje parter <a name="mottagare"></a>
+## 4. Recipients and third parties <a name="recipients"></a>
 
-Inga personuppgifter delas med tredje part för marknadsföring eller försäljning. Personuppgiftsbiträden:
+No personal data is shared with third parties for marketing or sales. Data processors:
 
-| Personuppgiftsbiträde | Behandling | Avtal | Säte |
+| Data processor | Processing | Agreement | Headquarters |
 | --- | --- | --- | --- |
-| Google Cloud Platform (GCP) | Hosting, lagring, Pub/Sub, observability | DPA via Google Cloud avtal | EU (Belgien) |
-| Neon Inc. | Databas (PostgreSQL) | DPA via Neons standardavtal | EU-region väljs |
-| Brevo / Resend (e-post) | Transaktionell e-post (efter MVP) | DPA enligt leverantörens villkor | EU |
-| Google (OAuth) | Inloggning om OAuth2 väljs | Inloggning, ingen permanent datadelning utöver subject-ID | EU/Globalt |
+| Google Cloud Platform (GCP) | Hosting, storage, Pub/Sub, observability | DPA via Google Cloud agreement | EU (Belgium) |
+| Neon Inc. | Database (PostgreSQL) | DPA via Neon's standard agreement | EU region selected |
+| Brevo / Resend (e-mail) | Transactional e-mail (post-MVP) | DPA per the provider's terms | EU |
+| Google (OAuth) | Sign-in if OAuth2 is chosen | Sign-in only, no permanent data sharing beyond subject ID | EU/Global |
 
-## 5. Tredjelandsöverföringar <a name="tredjeland"></a>
+## 5. Third-country transfers <a name="third-country"></a>
 
-* All primär datalagring sker i EU-regioner (Cloud Run, Cloud Storage, Pub/Sub, Neon).
-* Google-konton för OAuth2 hanteras av Google i deras globala infrastruktur. För användare som väljer OAuth2-inloggning kan transitering till tredjeland förekomma.
-* GCP omfattas av EU–US Data Privacy Framework och Standard Contractual Clauses (SCC).
+* All primary data storage takes place in EU regions (Cloud Run, Cloud Storage, Pub/Sub, Neon).
+* Google accounts for OAuth2 are handled by Google in their global infrastructure. For users who choose OAuth2 sign-in, transit to a third country can occur.
+* GCP is covered by the EU–US Data Privacy Framework and Standard Contractual Clauses (SCC).
 
-## 6. Lagringstid <a name="lagring"></a>
+## 6. Retention period <a name="retention"></a>
 
-Sammanfattas här. Fullständig retention-tabell finns i [non-functional-requirements.md](non-functional-requirements.md) avsnitt 5.
+Summarised here. The full retention table is available in [non-functional-requirements.md](non-functional-requirements.md) section 5.
 
-| Datatyp | Lagringstid | Trigger för radering |
+| Data type | Retention | Trigger for deletion |
 | --- | --- | --- |
-| Konto + e-post | Tills användaren raderar | Användaråtgärd, automatisk efter 24 mån inaktivitet |
-| Lösenordshash | Tills användaren raderar | Användaråtgärd |
-| Personliga kvittorader | Tills användaren raderar | Användaråtgärd (ON DELETE CASCADE) |
-| Original-PDF | 30 dagar (default) eller tills användaren raderar | Cronjobb + användaråtgärd |
-| Anonymiserad statistik | Permanent | Påverkas ej av kontoradering (är inte personuppgift) |
-| Audit-loggar för samtycke | 1 år | Schemalagd radering |
-| Allmänna loggar | 30 dagar | Standard i Cloud Logging |
+| Account + e-mail | Until the user deletes | User action, automatic after 24 months of inactivity |
+| Password hash | Until the user deletes | User action |
+| Personal receipt items | Until the user deletes | User action (ON DELETE CASCADE) |
+| Original PDF | 30 days (default) or until the user deletes | Cron job + user action |
+| Anonymised statistics | Permanent | Not affected by account deletion (not personal data) |
+| Audit logs for consent | 1 year | Scheduled deletion |
+| General logs | 30 days | Default in Cloud Logging |
 
-## 7. Riskbedömning <a name="risker"></a>
+## 7. Risk assessment <a name="risks"></a>
 
-Riskerna grupperas i tre dimensioner: konfidentialitet, integritet och tillgänglighet. Skala enligt [risk-register.md](risk-register.md).
+The risks are grouped along three dimensions: confidentiality, integrity and availability. Scale per [risk-register.md](risk-register.md).
 
-| ID | Risk | Sannolikhet | Konsekvens | Risknivå |
+| ID | Risk | Likelihood | Impact | Risk level |
 | --- | --- | --- | --- | --- |
-| DPIA-R1 | Obehörig läser annan användares kvitton | Låg | Hög | Medel |
-| DPIA-R2 | Anonymiseringen är otillräcklig och kan reverseras | Låg | Hög | Medel |
-| DPIA-R3 | PDF i Cloud Storage exponeras via felaktig ACL | Låg | Hög | Medel |
-| DPIA-R4 | Användare uppfattar inte samtyckes-omfattning | Medel | Hög | Hög |
-| DPIA-R5 | Glömsk användare lagrar känsliga PDF:er längre än önskat | Medel | Medel | Medel |
-| DPIA-R6 | Profilering uppstår oavsiktligt (varukorgsanalys per användare) | Låg | Medel | Låg |
-| DPIA-R7 | Incident upptäcks ej i tid för 72 h-rapportering | Medel | Hög | Hög |
-| DPIA-R8 | Loggar innehåller PII (e-postadress, IP) i klartext | Medel | Medel | Medel |
-| DPIA-R9 | Användare kan inte exportera all sin data | Låg | Medel | Låg |
-| DPIA-R10 | Användare kan inte få sina uppgifter raderade snabbt nog | Låg | Medel | Låg |
+| DPIA-R1 | Unauthorised party reads another user's receipts | Low | High | Medium |
+| DPIA-R2 | The anonymisation is insufficient and can be reversed | Low | High | Medium |
+| DPIA-R3 | PDF in Cloud Storage exposed via incorrect ACL | Low | High | Medium |
+| DPIA-R4 | User does not understand the scope of the consent | Medium | High | High |
+| DPIA-R5 | Forgetful user keeps sensitive PDFs longer than desired | Medium | Medium | Medium |
+| DPIA-R6 | Unintentional profiling arises (basket analysis per user) | Low | Medium | Low |
+| DPIA-R7 | Incident not detected in time for the 72-hour reporting deadline | Medium | High | High |
+| DPIA-R8 | Logs contain PII (e-mail address, IP) in plain text | Medium | Medium | Medium |
+| DPIA-R9 | User cannot export all their data | Low | Medium | Low |
+| DPIA-R10 | User cannot have their data deleted quickly enough | Low | Medium | Low |
 
-## 8. Mitigerande åtgärder <a name="mitigerande"></a>
+## 8. Mitigating measures <a name="mitigating"></a>
 
-| Risk-ID | Åtgärd | Var implementeras |
+| Risk ID | Measure | Where it is implemented |
 | --- | --- | --- |
-| DPIA-R1 | Row-Level Security i PostgreSQL + verifikation att alla repository-anrop är knutna till `user_id` | [architecture.md](architecture.md) avsnitt 7.1 |
-| DPIA-R2 | Anonymisering aggregeras till `ort` + `månad`, aldrig exakt butik eller tidpunkt; testfall i parser-suite | [architecture.md](architecture.md) avsnitt 5 |
-| DPIA-R3 | Privat Cloud Storage-bucket, åtkomst endast via signed URLs eller service account; IaC granskar policy | [architecture.md](architecture.md) avsnitt 8 |
-| DPIA-R4 | UX-text granskas, samtycke är aldrig förvalt, separat "Hjälp" som förklarar konsekvensen | [gdpr.md](gdpr.md) avsnitt 5 |
-| DPIA-R5 | Default 30 dagars lagring av PDF + tydligt val vid uppladdning | [non-functional-requirements.md](non-functional-requirements.md) NFR-D1 |
-| DPIA-R6 | Ingen automatisk profilering. Insiktsfunktioner som inflationsindex är aggregerade och visas endast för användaren själv. | [architecture.md](architecture.md) avsnitt 5 |
-| DPIA-R7 | Larm i Cloud Monitoring, dokumenterad process (avsnitt 10 nedan) | Detta dokument |
-| DPIA-R8 | Logback-mask för e-post och lösenord; PII-granskning i kodgranskning | [non-functional-requirements.md](non-functional-requirements.md) NFR-O5 |
-| DPIA-R9 | Exportfunktion (JSON eller CSV) finns från MVP | [gdpr.md](gdpr.md) avsnitt 3 |
-| DPIA-R10 | Radera-knapp använder `ON DELETE CASCADE` och raderar PDF:er i samma transaktion eller via asynkront jobb med audit-logg | [gdpr.md](gdpr.md) avsnitt 3 |
+| DPIA-R1 | Row-Level Security in PostgreSQL + verification that all repository calls are tied to `user_id` | [architecture.md](architecture.md) section 7.1 |
+| DPIA-R2 | Anonymisation aggregated to `city` + `month`, never exact store or timestamp; test cases in the parser suite | [architecture.md](architecture.md) section 5 |
+| DPIA-R3 | Private Cloud Storage bucket, access only via signed URLs or service account; IaC audits the policy | [architecture.md](architecture.md) section 8 |
+| DPIA-R4 | UX text reviewed, consent is never pre-ticked, separate "Help" explains the consequence | [gdpr.md](gdpr.md) section 5 |
+| DPIA-R5 | Default 30-day PDF retention + clear choice at upload | [non-functional-requirements.md](non-functional-requirements.md) NFR-D1 |
+| DPIA-R6 | No automatic profiling. Insight features such as the inflation index are aggregated and shown only to the user themselves. | [architecture.md](architecture.md) section 5 |
+| DPIA-R7 | Alerts in Cloud Monitoring, documented process (section 10 below) | This document |
+| DPIA-R8 | Logback mask for e-mail and password; PII review in code review | [non-functional-requirements.md](non-functional-requirements.md) NFR-O5 |
+| DPIA-R9 | Export function (JSON or CSV) available from MVP | [gdpr.md](gdpr.md) section 3 |
+| DPIA-R10 | Delete button uses `ON DELETE CASCADE` and deletes PDFs in the same transaction or via an asynchronous job with an audit log | [gdpr.md](gdpr.md) section 3 |
 
-## 9. Användarrättigheter (komplett tabell) <a name="rattigheter"></a>
+## 9. User rights (complete table) <a name="rights"></a>
 
-GDPR ger åtta huvudsakliga rättigheter (Art. 13–22). Matrisen visar hur Matdata 2.0 hanterar var och en.
+GDPR provides eight main rights (Articles 13–22). The matrix shows how Matdata 2.0 handles each one.
 
-| Rättighet | Artikel | Hur Matdata 2.0 stödjer den |
+| Right | Article | How Matdata 2.0 supports it |
 | --- | --- | --- |
-| Rätt till information | Art. 13, 14 | Integritetspolicy publiceras vid registrering. Visas även i `/profile/privacy`. |
-| Rätt till tillgång | Art. 15 | "Exportera min data" producerar JSON/CSV. Innehåller även loggar över samtycke. |
-| Rätt till rättelse | Art. 16 | Användaren kan redigera profil och e-postadress i `/profile`. Kvittorader kan korrigeras manuellt om felaktiga (planerat efter MVP). |
-| Rätt till radering ("rätten att bli glömd") | Art. 17 | "Radera mitt konto" raderar konto + kvitton (ON DELETE CASCADE) + PDF:er. Anonym statistik kvarstår. |
-| Rätt till begränsning av behandling | Art. 18 | Användaren kan dra tillbaka samtycke för crowdsourcing när som helst. Inaktivera kontot (avregistrera utan radering) erbjuds efter MVP. |
-| Rätt till dataportabilitet | Art. 20 | Samma exportfunktion som rätten till tillgång. Format: JSON och CSV. |
-| Rätt att invända | Art. 21 | Berättigat intresse används endast för säkerhetsloggar. Invändning hanteras manuellt. |
-| Rättigheter rörande automatiserat beslutsfattande | Art. 22 | Matdata 2.0 fattar inga automatiserade beslut med juridisk eller liknande effekt. |
+| Right to information | Art. 13, 14 | Privacy policy published at registration. Also shown at `/profile/privacy`. |
+| Right of access | Art. 15 | "Export my data" produces JSON/CSV. Also contains logs of consent. |
+| Right to rectification | Art. 16 | The user can edit profile and e-mail at `/profile`. Receipt items can be corrected manually if incorrect (planned post-MVP). |
+| Right to erasure ("the right to be forgotten") | Art. 17 | "Delete my account" deletes account + receipts (ON DELETE CASCADE) + PDFs. Anonymous statistics remain. |
+| Right to restriction of processing | Art. 18 | The user can withdraw consent for crowdsourcing at any time. Account deactivation (deregistering without deletion) is offered post-MVP. |
+| Right to data portability | Art. 20 | Same export feature as the right of access. Formats: JSON and CSV. |
+| Right to object | Art. 21 | Legitimate interest is used only for security logs. Objections are handled manually. |
+| Rights related to automated decision-making | Art. 22 | Matdata 2.0 does not make automated decisions with legal or similar effect. |
 
-## 10. Incidenthanteringsprocess <a name="incident"></a>
+## 10. Incident handling process <a name="incident"></a>
 
-Vid en personuppgiftsincident (GDPR Art. 33–34) följer Matdata 2.0 denna process:
+In the event of a personal data incident (GDPR Art. 33–34) Matdata 2.0 follows this process:
 
-1. **Upptäckt:** Incident identifieras via larm (Cloud Monitoring), manuell rapport från användare eller säkerhetspartner. Tid noteras.
-2. **Kategorisering:** Inom 4 timmar bestäms typ (konfidentialitet, integritet, tillgänglighet), omfattning och berörda kategorier.
-3. **Begränsning:** Sårbarhet stängs (rollback, patch, blockering). Forensisk insamling av relevanta loggar.
-4. **Bedömning av risk för berörda:** Bedömning av om incidenten "sannolikt medför en risk" eller "sannolikt medför en hög risk" enligt Art. 33–34.
-5. **Anmälan till IMY:** Om risken bedöms som sannolik, anmäls incidenten till Integritetsskyddsmyndigheten inom 72 timmar från upptäckt. Mall för anmälan förbereds inför MVP-lansering.
-6. **Informera berörda:** Vid hög risk informeras användare utan onödigt dröjsmål, i klarspråk.
-7. **Postmortem:** Incident dokumenteras, rotorsak analyseras, åtgärder läggs in i [risk-register.md](risk-register.md) och i issue-tracker.
+1. **Detection:** Incident is identified via alert (Cloud Monitoring), manual report from a user or security partner. Time is noted.
+2. **Categorisation:** Within 4 hours the type (confidentiality, integrity, availability), scope and affected categories are determined.
+3. **Containment:** Vulnerability is closed (rollback, patch, blocking). Forensic collection of relevant logs.
+4. **Risk assessment for affected individuals:** Assessment of whether the incident "is likely to result in a risk" or "is likely to result in a high risk" per Art. 33–34.
+5. **Notification to IMY:** If the risk is assessed as likely, the incident is reported to Integritetsskyddsmyndigheten (the Swedish supervisory authority) within 72 hours of detection. A notification template is prepared ahead of the MVP launch.
+6. **Inform affected individuals:** In the case of a high risk, users are informed without undue delay, in plain language.
+7. **Post-mortem:** Incident is documented, root cause analysed, actions added to [risk-register.md](risk-register.md) and the issue tracker.
 
-Kontaktlista uppdateras inför MVP-lansering. Tills dess är ensam ansvarig kontaktperson projektägaren.
+The contact list is updated ahead of the MVP launch. Until then the sole responsible contact is the project owner.
 
-## 11. Slutsats och beslut <a name="slutsats"></a>
+## 11. Conclusion and decision <a name="conclusion"></a>
 
-Denna DPIA visar att behandlingen i Matdata 2.0 **kan genomföras** under förutsättning att:
+This DPIA shows that the processing in Matdata 2.0 **can be carried out** provided that:
 
-* Alla mitigerande åtgärder i avsnitt 8 är implementerade innan publik lansering.
-* Samtyckes-flödet för crowdsourcing är testat och granskat.
-* Incidenthanteringsprocessen är dokumenterad och kontaktlista är aktuell.
-* Anonymiseringslogiken har enhetstester och kodgranskas av minst en oberoende granskare.
-* Användarrättigheterna i avsnitt 9 har funktionalitet på plats senast vid publik lansering.
+* All mitigating measures in section 8 are implemented before the public launch.
+* The consent flow for crowdsourcing is tested and reviewed.
+* The incident handling process is documented and the contact list is current.
+* The anonymisation logic has unit tests and is code-reviewed by at least one independent reviewer.
+* The user rights in section 9 have working functionality in place at the latest by the public launch.
 
-**Behov av förhandssamråd med IMY:** Bedöms inte vara nödvändigt baserat på den planerade arkitekturen, eftersom riskerna mitigieras till acceptabel nivå. Bedömningen revideras om scopet utökas (t.ex. om hälsodata samlas in explicit eller om profilering aktiveras).
+**Need for prior consultation with IMY:** Judged not to be necessary based on the planned architecture, because the risks are mitigated to an acceptable level. The judgement is revised if the scope is expanded (e.g. if health data is collected explicitly or if profiling is activated).
 
-## 12. Revisionshistorik <a name="historik"></a>
+## 12. Revision history <a name="history"></a>
 
-| Version | Datum | Beskrivning |
+| Version | Date | Description |
 | --- | --- | --- |
-| 1.0 | 2026-06-29 | Initial DPIA upprättad som del av förstudien. |
+| 1.0 | 2026-06-29 | Initial DPIA produced as part of the pre-study. |
