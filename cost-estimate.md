@@ -1,154 +1,154 @@
-# Kostnadsuppskattning: Matdata 2.0
+# Cost estimate: Matdata 2.0
 
 **Version:** 1.0
-**Senast uppdaterad:** 2026-06-29
-**Status:** Förstudie klar för granskning
+**Last updated:** 2026-06-29
+**Status:** Pre-study ready for review
 
-Detta dokument beskriver förväntade kostnader för Matdata 2.0 under MVP-fasen och de första 12 månaderna efter lansering. Siffrorna är uppskattade utifrån offentliga prislistor som gäller per Q2 2026 och förutsätter region `europe-west1` (Belgien) eller motsvarande närliggande EU-region för dataresidens.
+This document describes the expected costs for Matdata 2.0 during the MVP phase and the first 12 months after launch. The figures are estimated from public price lists valid as of Q2 2026 and assume the region `europe-west1` (Belgium) or a comparable nearby EU region for data residency.
 
-> **Disclaimer:** Faktiska priser kan avvika. Detta dokument är ett underlag för budgetering och uppdateras minst en gång per kvartal. Alla siffror är i SEK och utan moms om inget annat anges.
+> **Disclaimer:** Actual prices may differ. This document is a basis for budgeting and is updated at least once per quarter. All figures are in SEK and exclude VAT unless otherwise stated.
 
-## Innehåll
-- [1. Antaganden om trafik och volym](#antaganden)
-- [2. Kostnadsuppskattning per tjänst](#per-tjanst)
-- [3. Total uppskattning för MVP](#total-mvp)
-- [4. Skalning till 5 000 användare](#skalning)
-- [5. Engångskostnader](#engangskostnader)
-- [6. Kostnadskontroll och larm](#kontroll)
-- [7. Open Source och övrigt](#oss)
+## Contents
+- [1. Assumptions about traffic and volume](#assumptions)
+- [2. Cost estimate per service](#per-service)
+- [3. Total estimate for the MVP](#total-mvp)
+- [4. Scaling to 5,000 users](#scaling)
+- [5. One-off costs](#one-off)
+- [6. Cost control and alerts](#control)
+- [7. Open source and other](#oss)
 
-## 1. Antaganden om trafik och volym <a name="antaganden"></a>
+## 1. Assumptions about traffic and volume <a name="assumptions"></a>
 
-| Scenario | Aktiva användare/mån | Kvitton/användare/mån | Totala kvitton/mån | PDF-storlek/snitt |
+| Scenario | Active users/month | Receipts/user/month | Total receipts/month | PDF size (avg) |
 | --- | --- | --- | --- | --- |
-| MVP (intern testning) | 5 | 20 | 100 | 150 KB |
-| Tidiga användare | 50 | 15 | 750 | 150 KB |
-| Lansering | 500 | 10 | 5 000 | 150 KB |
-| Tillväxt (12 mån) | 5 000 | 8 | 40 000 | 150 KB |
+| MVP (internal testing) | 5 | 20 | 100 | 150 KB |
+| Early users | 50 | 15 | 750 | 150 KB |
+| Launch | 500 | 10 | 5,000 | 150 KB |
+| Growth (12 months) | 5,000 | 8 | 40,000 | 150 KB |
 
-Varje kvitto antas ge:
-* En PDF-fil i Cloud Storage.
-* Ett Pub/Sub-meddelande.
-* En Parser Service-exekvering (~3 sek CPU och 512 MB RAM).
-* Ca 25 rader i `RECEIPT_ITEMS`.
-* Ca 25 rader i `GLOBAL_PRICE_POINTS` (om samtycke).
+Each receipt is assumed to produce:
+* One PDF file in Cloud Storage.
+* One Pub/Sub message.
+* One Parser Service execution (~3 s CPU and 512 MB RAM).
+* Approximately 25 rows in `RECEIPT_ITEMS`.
+* Approximately 25 rows in `GLOBAL_PRICE_POINTS` (if consent is given).
 
-## 2. Kostnadsuppskattning per tjänst <a name="per-tjanst"></a>
+## 2. Cost estimate per service <a name="per-service"></a>
 
 ### 2.1 Google Cloud Run
-Cloud Run prissätts per CPU-vCPU-sekund och GiB-RAM-sekund. Generös free tier (180 000 vCPU-sek + 360 000 GiB-sek per månad).
+Cloud Run is priced per vCPU-second and per GiB-RAM-second. Generous free tier (180,000 vCPU-s + 360,000 GiB-s per month).
 
 | Scenario | Cloud Run (core) | Cloud Run (parser) | Total Cloud Run |
 | --- | --- | --- | --- |
-| MVP | Free tier täcker | Free tier täcker | 0 kr |
-| Tidiga användare | Free tier täcker | Free tier täcker | 0 kr |
-| Lansering | ~50 kr | ~30 kr | ~80 kr |
-| Tillväxt | ~400 kr | ~250 kr | ~650 kr |
+| MVP | Free tier covers | Free tier covers | 0 kr |
+| Early users | Free tier covers | Free tier covers | 0 kr |
+| Launch | ~50 kr | ~30 kr | ~80 kr |
+| Growth | ~400 kr | ~250 kr | ~650 kr |
 
-### 2.2 Cloud Storage (PDF-lagring)
-Standard-bucket i regionen `europe-west1`. ~0,02 USD per GB och månad. Lifecycle policy raderar PDF:er efter 30 dagar (se [non-functional-requirements.md](non-functional-requirements.md) NFR-D1).
+### 2.2 Cloud Storage (PDF storage)
+Standard bucket in the region `europe-west1`. ~0.02 USD per GB per month. Lifecycle policy deletes PDFs after 30 days (see [non-functional-requirements.md](non-functional-requirements.md) NFR-D1).
 
-| Scenario | Lagrad PDF-volym | Månadskostnad |
+| Scenario | Stored PDF volume | Monthly cost |
 | --- | --- | --- |
 | MVP | 15 MB | < 1 kr |
-| Tidiga användare | 110 MB | < 1 kr |
-| Lansering | 750 MB | ~2 kr |
-| Tillväxt | 6 GB | ~15 kr |
+| Early users | 110 MB | < 1 kr |
+| Launch | 750 MB | ~2 kr |
+| Growth | 6 GB | ~15 kr |
 
 ### 2.3 Google Cloud Pub/Sub
-Pub/Sub: 10 GB inkluderat per månad, därefter ~40 öre per GB. Meddelandestorlek bedöms < 1 KB.
+Pub/Sub: 10 GB included per month, then ~40 öre per GB. Message size is assumed to be < 1 KB.
 
-| Scenario | Antal meddelanden | Datavolym | Månadskostnad |
+| Scenario | Number of messages | Data volume | Monthly cost |
 | --- | --- | --- | --- |
 | MVP | 100 | < 1 MB | 0 kr |
-| Tidiga användare | 750 | < 1 MB | 0 kr |
-| Lansering | 5 000 | ~5 MB | 0 kr |
-| Tillväxt | 40 000 | ~40 MB | 0 kr |
+| Early users | 750 | < 1 MB | 0 kr |
+| Launch | 5,000 | ~5 MB | 0 kr |
+| Growth | 40,000 | ~40 MB | 0 kr |
 
 ### 2.4 Neon (serverless PostgreSQL)
 
-Neon erbjuder en gratis tier (0,5 GB storage, 191,9 compute hours/mån) och betalplaner från ~19 USD/mån (Launch) som ger 10 GB och autoscaling.
+Neon offers a free tier (0.5 GB storage, 191.9 compute hours/month) and paid plans from ~19 USD/month (Launch) that provide 10 GB and autoscaling.
 
-| Scenario | Plan | Storage | Compute hours | Månadskostnad |
+| Scenario | Plan | Storage | Compute hours | Monthly cost |
 | --- | --- | --- | --- | --- |
-| MVP | Free | < 100 MB | Låg, < free tier | 0 kr |
-| Tidiga användare | Free | < 500 MB | < free tier | 0 kr |
-| Lansering | Launch | ~1 GB | Måttlig | ~210 kr (≈ 19 USD) |
-| Tillväxt | Scale | ~5 GB | Hög | ~750 kr (≈ 69 USD) |
+| MVP | Free | < 100 MB | Low, < free tier | 0 kr |
+| Early users | Free | < 500 MB | < free tier | 0 kr |
+| Launch | Launch | ~1 GB | Moderate | ~210 kr (≈ 19 USD) |
+| Growth | Scale | ~5 GB | High | ~750 kr (≈ 69 USD) |
 
-PR-miljöer skapar databasbranchar. Free tier räcker så länge endast en eller två PR är öppna samtidigt. Om CI/CD-kostnaden blir märkbar: konfigurera kortare branch-livslängd eller dela en testdatabas.
+PR environments create database branches. The free tier is sufficient as long as only one or two PRs are open at the same time. If the CI/CD cost becomes noticeable: configure a shorter branch lifetime or share a test database.
 
 ### 2.5 Cloud Logging, Cloud Trace, Cloud Monitoring
-GCP:s observabilitetsstack har generös free tier (50 GB Cloud Logging per projekt/mån).
+GCP's observability stack has a generous free tier (50 GB Cloud Logging per project/month).
 
-| Scenario | Loggvolym | Månadskostnad |
+| Scenario | Log volume | Monthly cost |
 | --- | --- | --- |
 | MVP | < 1 GB | 0 kr |
-| Tidiga användare | < 5 GB | 0 kr |
-| Lansering | ~10 GB | 0 kr |
-| Tillväxt | ~40 GB | 0 kr (under fri tier 50 GB) |
+| Early users | < 5 GB | 0 kr |
+| Launch | ~10 GB | 0 kr |
+| Growth | ~40 GB | 0 kr (below the 50 GB free tier) |
 
-### 2.6 Domän, certifikat och e-post
+### 2.6 Domain, certificate and e-mail
 
-| Post | Kostnad |
+| Item | Cost |
 | --- | --- |
-| Domän (.se) | ~120 kr/år |
-| SSL/TLS | 0 kr (Google-hanterat) |
-| Transaktionell e-post (t.ex. Brevo, Resend) | 0 kr för MVP, ~50 kr/mån vid lansering |
+| Domain (.se) | ~120 kr/year |
+| SSL/TLS | 0 kr (Google-managed) |
+| Transactional e-mail (e.g. Brevo, Resend) | 0 kr for MVP, ~50 kr/month at launch |
 
 ### 2.7 GitHub Actions
-Free tier täcker fullt ut i public-repo. För private-repo finns gratis kvot (2 000 min/mån för Pro).
+The free tier covers everything in a public repo. For private repos there is a free quota (2,000 min/month for Pro).
 
-## 3. Total uppskattning för MVP <a name="total-mvp"></a>
+## 3. Total estimate for the MVP <a name="total-mvp"></a>
 
-| Scenario | Månadskostnad (uppskattning) | Årskostnad |
+| Scenario | Monthly cost (estimate) | Annual cost |
 | --- | --- | --- |
-| MVP (intern testning) | < 25 kr | ~300 kr |
-| Tidiga användare (50 anv) | ~50 kr | ~600 kr |
-| Lansering (500 anv) | ~350 kr | ~4 200 kr |
+| MVP (internal testing) | < 25 kr | ~300 kr |
+| Early users (50 users) | ~50 kr | ~600 kr |
+| Launch (500 users) | ~350 kr | ~4,200 kr |
 
-MVP-fasen är extremt kostnadseffektiv tack vare alla gratisnivåer. Den verkliga kostnaden vid lansering avgörs nästan helt av Neons betalplan, som blir nödvändig så snart databasen passerar 0,5 GB eller traffiken når en nivå där free tier:s compute-timmar tar slut.
+The MVP phase is extremely cost-effective thanks to all the free tiers. The real cost at launch is almost entirely determined by the Neon paid plan, which becomes necessary as soon as the database passes 0.5 GB or traffic reaches a level where the free tier's compute hours run out.
 
-## 4. Skalning till 5 000 användare <a name="skalning"></a>
+## 4. Scaling to 5,000 users <a name="scaling"></a>
 
-Vid 5 000 aktiva användare bedöms månadskostnaden hamna kring 1 500–2 000 kr exkl. moms.
+At 5,000 active users the monthly cost is judged to land at around 1,500–2,000 kr excl. VAT.
 
-| Post | Månadskostnad |
+| Item | Monthly cost |
 | --- | --- |
 | Cloud Run | ~650 kr |
 | Cloud Storage | ~15 kr |
 | Pub/Sub | ~10 kr |
 | Neon (Scale) | ~750 kr |
-| Loggar och observability | ~50 kr |
-| E-post | ~150 kr |
-| Övrigt (DNS, domän) | ~10 kr |
-| **Summa** | **~1 635 kr/mån** |
+| Logs and observability | ~50 kr |
+| E-mail | ~150 kr |
+| Other (DNS, domain) | ~10 kr |
+| **Total** | **~1,635 kr/month** |
 
-Denna nivå förutsätter att OCR/Vision-API (krav K17) inte är aktiverat. Om K17 aktiveras tillkommer ~1,50 USD per 1 000 dokument vid Google Cloud Vision OCR, vilket vid 40 000 kvitton/mån blir ~60 USD = ~650 kr/mån.
+This level assumes that the OCR/Vision API (requirement K17) is not activated. If K17 is activated, ~1.50 USD per 1,000 documents is added for Google Cloud Vision OCR, which at 40,000 receipts/month becomes ~60 USD = ~650 kr/month.
 
-## 5. Engångskostnader <a name="engangskostnader"></a>
+## 5. One-off costs <a name="one-off"></a>
 
-| Post | Uppskattning |
+| Item | Estimate |
 | --- | --- |
-| Externa designtimmar (om aktuellt) | 0–10 000 kr |
-| Penetrationstest före publik lansering | 15 000–40 000 kr |
-| Juridisk granskning av integritetspolicy och villkor | 5 000–10 000 kr |
-| Logotyp och varumärke | 0–5 000 kr |
+| External design hours (if applicable) | 0–10,000 kr |
+| Penetration test before public launch | 15,000–40,000 kr |
+| Legal review of privacy policy and terms | 5,000–10,000 kr |
+| Logo and brand | 0–5,000 kr |
 
-För en hobbyversion eller fullt självgjord version är samtliga engångskostnader 0 kr. För en publik lansering bör penetrationstest och juridisk granskning planeras in.
+For a hobby version or fully self-built version all one-off costs are 0 kr. For a public launch a penetration test and a legal review should be planned in.
 
-## 6. Kostnadskontroll och larm <a name="kontroll"></a>
+## 6. Cost control and alerts <a name="control"></a>
 
-* **GCP budgetlarm:** Sätts till 90 % och 100 % av månadsbudgeten. Larmkanal: e-post.
-* **Neon notifikationer:** Aktiveras för storage- och compute-tröskelvärden.
-* **Cloud Run max instanser:** Konfigureras (`--max-instances`) för att hindra runaway-skala.
-* **Pub/Sub flow control:** Begränsa antal samtidiga meddelanden för att undvika loopar.
-* **Lifecycle på Cloud Storage:** Automatisk radering av PDF efter 30 dagar.
+* **GCP budget alerts:** Set to 90 % and 100 % of the monthly budget. Alert channel: e-mail.
+* **Neon notifications:** Enabled for storage and compute thresholds.
+* **Cloud Run max instances:** Configured (`--max-instances`) to prevent runaway scale.
+* **Pub/Sub flow control:** Limit the number of concurrent messages to avoid loops.
+* **Lifecycle on Cloud Storage:** Automatic deletion of PDFs after 30 days.
 
-Se [risk-register.md](risk-register.md) post **E1** för riskbeskrivningen.
+See [risk-register.md](risk-register.md) entry **E1** for the risk description.
 
-## 7. Open Source och övrigt <a name="oss"></a>
+## 7. Open source and other <a name="oss"></a>
 
-Inga betalda licenser används i MVP. Samtliga ramverk (Spring Boot, Apache PDFBox, Tailwind CSS, HTMX, Thymeleaf) är öppen källkod under tillåtande licenser (Apache 2.0, MIT eller motsvarande).
+No paid licences are used in the MVP. All frameworks (Spring Boot, Apache PDFBox, Tailwind CSS, HTMX, Thymeleaf) are open source under permissive licences (Apache 2.0, MIT or equivalent).
 
-Om vi i framtiden introducerar betalda komponenter (t.ex. en plats för "Senaste nytt om matpriser" via en datatjänst) ska kostnaderna uppdateras i detta dokument.
+If we introduce paid components in the future (e.g. a slot for "Latest food price news" via a data service), the costs are to be updated in this document.

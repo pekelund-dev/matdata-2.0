@@ -1,250 +1,250 @@
-# Riskregister: Matdata 2.0
+# Risk register: Matdata 2.0
 
 **Version:** 1.0
-**Senast uppdaterad:** 2026-06-29
-**Status:** Förstudie klar för granskning
+**Last updated:** 2026-06-29
+**Status:** Pre-study ready for review
 
-Detta dokument samlar identifierade risker i Matdata 2.0. Riskerna kategoriseras, bedöms och får en mitigeringsplan med tydlig ägare. Registret revideras inför varje fasövergång (se [project-plan_requirements.md](project-plan_requirements.md)).
+This document gathers the identified risks in Matdata 2.0. Risks are categorised, assessed and given a mitigation plan with a clear owner. The register is revised before each phase transition (see [project-plan_requirements.md](project-plan_requirements.md)).
 
-## Innehåll
-- [Skala och definitioner](#skala-och-definitioner)
-- [Hur registret används](#hur-registret-anvands)
-- [Risköversikt (matris)](#riskoversikt)
-- [Tekniska risker (T)](#tekniska-risker)
-- [Verksamhets- och produktrisker (V)](#verksamhetsrisker)
-- [Säkerhets- och GDPR-risker (S)](#sakerhetsrisker)
-- [Leverantörs- och beroenderisker (L)](#leverantorsrisker)
-- [Operationella risker (O)](#operationella-risker)
-- [Ekonomiska risker (E)](#ekonomiska-risker)
+## Contents
+- [Scale and definitions](#scale-and-definitions)
+- [How the register is used](#how-the-register-is-used)
+- [Risk overview (matrix)](#risk-overview)
+- [Technical risks (T)](#technical-risks)
+- [Business and product risks (V)](#business-risks)
+- [Security and GDPR risks (S)](#security-risks)
+- [Supplier and dependency risks (L)](#supplier-risks)
+- [Operational risks (O)](#operational-risks)
+- [Financial risks (E)](#financial-risks)
 
-## Skala och definitioner <a name="skala-och-definitioner"></a>
+## Scale and definitions <a name="scale-and-definitions"></a>
 
-**Sannolikhet:**
-* **Hög (H):** Troligt att inträffa under MVP-fasen.
-* **Medel (M):** Kan inträffa, men är inte sannolikt på kort sikt.
-* **Låg (L):** Osannolikt under MVP-fasen.
+**Likelihood:**
+* **High (H):** Likely to occur during the MVP phase.
+* **Medium (M):** May occur, but not likely in the short term.
+* **Low (L):** Unlikely during the MVP phase.
 
-**Konsekvens:**
-* **Hög (H):** Hotar leverans, brand eller juridisk efterlevnad.
-* **Medel (M):** Försenar leverans eller försämrar användarupplevelsen avsevärt.
-* **Låg (L):** Hanterbar, krävs ändå mitigering för att inte växa.
+**Impact:**
+* **High (H):** Threatens delivery, brand or legal compliance.
+* **Medium (M):** Delays delivery or significantly worsens the user experience.
+* **Low (L):** Manageable, mitigation still required so it does not grow.
 
-**Risknivå (kombination):**
+**Risk level (combination):**
 
-| Sannolikhet \\ Konsekvens | Låg | Medel | Hög |
+| Likelihood \\ Impact | Low | Medium | High |
 | --- | --- | --- | --- |
-| **Hög** | Medel | Hög | Kritisk |
-| **Medel** | Låg | Medel | Hög |
-| **Låg** | Låg | Låg | Medel |
+| **High** | Medium | High | Critical |
+| **Medium** | Low | Medium | High |
+| **Low** | Low | Low | Medium |
 
-## Hur registret används <a name="hur-registret-anvands"></a>
+## How the register is used <a name="how-the-register-is-used"></a>
 
-* Varje risk har ett unikt ID (`T1`, `V1`, osv.) och refereras därifrån i kod, kommentarer och dokumentation.
-* Ägare ansvarar för att övervaka triggern, exekvera mitigeringen och föreslå statusändringar.
-* Vid varje fasstart (`Fas 1`–`Fas 5`) gås registret igenom och status uppdateras.
-* Risker som inträffar flyttas till `Realiserad` och får en rapport i en sektion `Incidenter` (skapas vid behov).
+* Each risk has a unique ID (`T1`, `V1`, etc.) and is referenced from code, comments and documentation.
+* The owner is responsible for monitoring the trigger, executing the mitigation and proposing status changes.
+* At every phase start (`Phase 1`–`Phase 5`) the register is walked through and the status updated.
+* Risks that materialise are moved to `Realised` and get a report in an `Incidents` section (created when needed).
 
-## Risköversikt <a name="riskoversikt"></a>
+## Risk overview <a name="risk-overview"></a>
 
-| ID | Risk | Sannolikhet | Konsekvens | Risknivå | Ägare | Status |
+| ID | Risk | Likelihood | Impact | Risk level | Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| T1 | ICA/Kivra ändrar PDF-layout | Hög | Hög | Kritisk | Parser-utvecklare | Aktiv |
-| T2 | Komplex EAN-logik för viktvaror | Hög | Medel | Hög | Parser-utvecklare | Aktiv |
-| T3 | OpenTelemetry-konfiguration mot GCP fungerar inte som väntat | Medel | Medel | Medel | Plattformsägare | Aktiv |
-| T4 | Neon-branchning per PR introducerar oväntade kostnader eller fördröjningar | Medel | Medel | Medel | Plattformsägare | Aktiv |
-| T5 | Java 26 / Spring Boot 4.x introducerar oväntade buggar (relativt nya versioner) | Medel | Medel | Medel | Lead developer | Aktiv |
-| T6 | Pub/Sub-meddelanden levereras flera gånger eller utanför ordning | Hög | Låg | Medel | Parser-utvecklare | Aktiv |
-| V1 | Användare laddar upp få kvitton och datavolymen blir för liten för att ge insikt | Medel | Hög | Hög | Produktägare | Aktiv |
-| V2 | Endast ICA-stöd vid lansering begränsar målgruppen | Hög | Medel | Hög | Produktägare | Aktiv |
-| V3 | Krav K15 ("Moms-kollen") blir irrelevant när momssänkningen normaliseras | Hög | Låg | Medel | Produktägare | Aktiv |
-| S1 | Personuppgifter exponeras via felaktig anonymisering | Låg | Hög | Medel | Dataskyddsansvarig | Aktiv |
-| S2 | Inloggningsflöde innehåller sårbarhet (t.ex. sessionhijack) | Låg | Hög | Medel | Säkerhetsansvarig | Aktiv |
-| S3 | Användare ger samtycke utan att förstå vad som delas | Medel | Hög | Hög | Dataskyddsansvarig | Aktiv |
-| S4 | Incident utan beredskap att rapportera inom 72 h (GDPR Art. 33) | Medel | Hög | Hög | Dataskyddsansvarig | Aktiv |
-| L1 | Kivra ändrar sina villkor eller blockerar nedladdning av kvitton | Låg | Hög | Medel | Produktägare | Aktiv |
-| L2 | Neon avvecklar gratisplaner eller höjer priser kraftigt | Låg | Medel | Låg | Plattformsägare | Aktiv |
-| L3 | GCP höjer priser eller drar in tjänster (t.ex. Pub/Sub) | Låg | Medel | Låg | Plattformsägare | Aktiv |
-| O1 | Endast en utvecklare (key person) på projektet | Hög | Hög | Kritisk | Projektägare | Aktiv |
-| O2 | Driftsavbrott på Cloud Run eller Neon utan automatisk failover | Medel | Medel | Medel | Plattformsägare | Aktiv |
-| O3 | Säkerhetspatch eller brådskande Spring-uppdatering missas | Medel | Medel | Medel | Lead developer | Aktiv |
-| E1 | Molnkostnader skenar i samband med trafiktopp eller felkonfiguration | Medel | Medel | Medel | Plattformsägare | Aktiv |
-| E2 | OCR/Vision API (K17) blir dyrare än förväntat när det aktiveras | Låg | Medel | Låg | Produktägare | Aktiv |
+| T1 | ICA/Kivra changes the PDF layout | High | High | Critical | Parser developer | Active |
+| T2 | Complex EAN logic for weight items | High | Medium | High | Parser developer | Active |
+| T3 | OpenTelemetry configuration against GCP does not work as expected | Medium | Medium | Medium | Platform owner | Active |
+| T4 | Neon branching per PR introduces unexpected costs or delays | Medium | Medium | Medium | Platform owner | Active |
+| T5 | Java 26 / Spring Boot 4.x introduces unexpected bugs (relatively new versions) | Medium | Medium | Medium | Lead developer | Active |
+| T6 | Pub/Sub messages are delivered multiple times or out of order | High | Low | Medium | Parser developer | Active |
+| V1 | Users upload few receipts and the data volume becomes too small to provide insights | Medium | High | High | Product owner | Active |
+| V2 | Supporting only ICA at launch limits the target audience | High | Medium | High | Product owner | Active |
+| V3 | Requirement K15 ("Moms-kollen") becomes irrelevant when the VAT reduction normalises | High | Low | Medium | Product owner | Active |
+| S1 | Personal data is exposed via incorrect anonymisation | Low | High | Medium | Data protection officer | Active |
+| S2 | The sign-in flow contains a vulnerability (e.g. session hijack) | Low | High | Medium | Security officer | Active |
+| S3 | Users give consent without understanding what is being shared | Medium | High | High | Data protection officer | Active |
+| S4 | Incident without the readiness to report within 72 hours (GDPR Art. 33) | Medium | High | High | Data protection officer | Active |
+| L1 | Kivra changes its terms or blocks receipt downloads | Low | High | Medium | Product owner | Active |
+| L2 | Neon discontinues free plans or raises prices substantially | Low | Medium | Low | Platform owner | Active |
+| L3 | GCP raises prices or removes services (e.g. Pub/Sub) | Low | Medium | Low | Platform owner | Active |
+| O1 | Only one developer (key person) on the project | High | High | Critical | Project owner | Active |
+| O2 | Outages on Cloud Run or Neon without automatic failover | Medium | Medium | Medium | Platform owner | Active |
+| O3 | Security patch or urgent Spring update is missed | Medium | Medium | Medium | Lead developer | Active |
+| E1 | Cloud costs spiral out of control during traffic peaks or misconfiguration | Medium | Medium | Medium | Platform owner | Active |
+| E2 | OCR/Vision API (K17) becomes more expensive than expected once activated | Low | Medium | Low | Product owner | Active |
 
-## Tekniska risker (T) <a name="tekniska-risker"></a>
+## Technical risks (T) <a name="technical-risks"></a>
 
-### T1 — ICA/Kivra ändrar PDF-layout
-* **Beskrivning:** Parsern är hårt knuten till ICA:s nuvarande PDF-layout. Layoutändringar bryter parsningen utan förvarning.
-* **Trigger:** Plötslig ökning av kvitton i status `FAILED`, eller canary-testet (avsnitt 6.5 i projektplanen) larmar.
-* **Mitigering:**
-    * Versionera parsern med tydlig butik + format-version (krav i projektplan 6.4).
-    * Schemalagd canary-test mot referens-PDF varje vecka (projektplan 6.5).
-    * Larmregel i GCP Cloud Monitoring som triggar när failure-andelen passerar tröskel.
-    * Återhämtningsplan: snabb hotfix-process där en uppdaterad parser kan deployas inom 24 h utan att gå via vanlig release-cykel.
-* **Restrisk:** Användare upplever att enstaka kvitton inte processas under tiden patch tas fram.
+### T1 — ICA/Kivra changes the PDF layout
+* **Description:** The parser is tightly coupled to ICA's current PDF layout. Layout changes break the parsing without warning.
+* **Trigger:** Sudden increase in receipts with status `FAILED`, or the canary test (section 6.5 in the project plan) raises an alarm.
+* **Mitigation:**
+    * Version the parser with a clear store + format version (requirement in project plan 6.4).
+    * Scheduled canary test against a reference PDF each week (project plan 6.5).
+    * Alert rule in GCP Cloud Monitoring that triggers when the failure rate passes a threshold.
+    * Recovery plan: fast hotfix process where an updated parser can be deployed within 24 hours without going through the normal release cycle.
+* **Residual risk:** Users experience that the occasional receipt is not processed while a patch is being prepared.
 
-### T2 — Komplex EAN-logik för viktvaror
-* **Beskrivning:** EAN-koder med prefix 20–29 innehåller vikt/pris i koden. Felaktig maskning bryter prishistoriken eller skapar dubbletter.
-* **Trigger:** Tester misslyckas, eller produktkatalogen i databasen växer onaturligt snabbt med "likadana" produkter.
-* **Mitigering:**
-    * Omfattande enhetstester med kända EAN-exempel (Fas 2, krav K3).
-    * Migrering: möjlighet att i efterhand normalisera produkter om felaktig logik upptäckts (manuellt skript via DBA-roll).
-    * Dokumenterad referenstabell över hanterade prefix.
-* **Restrisk:** Nya butiker (K20) kan introducera nya prefix-konventioner.
+### T2 — Complex EAN logic for weight items
+* **Description:** EAN codes with prefix 20–29 contain weight/price within the code. Incorrect masking breaks the price history or creates duplicates.
+* **Trigger:** Tests fail, or the product catalogue in the database grows unnaturally fast with "identical" products.
+* **Mitigation:**
+    * Extensive unit tests with known EAN examples (Phase 2, requirement K3).
+    * Migration: ability to retroactively normalise products if incorrect logic is discovered (manual script via DBA role).
+    * Documented reference table over handled prefixes.
+* **Residual risk:** New stores (K20) may introduce new prefix conventions.
 
-### T3 — OpenTelemetry-konfiguration mot GCP fungerar inte som väntat
-* **Beskrivning:** OTel-export till GCP Cloud Trace/Logging kräver korrekt konfiguration. Misslyckande gör att vi tappar observabilitet i produktion.
-* **Trigger:** Saknade traces eller loggar i Cloud Trace efter deployment.
-* **Mitigering:**
-    * Integrationstest som verifierar att en lokal trace exporteras till en stub.
-    * Tidigt smoke-test i Fas 3 i en dedikerad miljö.
-    * Backup-logging via Cloud Logging direkt så att vi i värsta fall har strukturerade loggar.
+### T3 — OpenTelemetry configuration against GCP does not work as expected
+* **Description:** OTel export to GCP Cloud Trace/Logging requires correct configuration. Failure means we lose observability in production.
+* **Trigger:** Missing traces or logs in Cloud Trace after deployment.
+* **Mitigation:**
+    * Integration test that verifies a local trace is exported to a stub.
+    * Early smoke test in Phase 3 in a dedicated environment.
+    * Backup logging via Cloud Logging directly so that, in the worst case, we still have structured logs.
 
-### T4 — Neon-branchning per PR introducerar oväntade kostnader eller fördröjningar
-* **Beskrivning:** Per-PR-branchning är nytt och kan introducera långa väntetider eller höga kostnader.
-* **Trigger:** PR-jobb tar > 5 min på databasprovisionering, eller månadskostnaden överstiger budget i [cost-estimate.md](cost-estimate.md).
-* **Mitigering:**
-    * Sätt tydliga kostnadslarm i Neon-projektet.
-    * Möjlighet att fall-back till delad test-databas under stora trafiktoppar.
-    * Automatisk teardown vid PR-stängning (krav i Fas 1).
+### T4 — Neon branching per PR introduces unexpected costs or delays
+* **Description:** Per-PR branching is new and may introduce long waits or high costs.
+* **Trigger:** PR jobs take > 5 minutes for database provisioning, or the monthly cost exceeds the budget in [cost-estimate.md](cost-estimate.md).
+* **Mitigation:**
+    * Set clear cost alerts in the Neon project.
+    * Ability to fall back to a shared test database during large traffic peaks.
+    * Automatic teardown at PR close (requirement in Phase 1).
 
-### T5 — Java 26 / Spring Boot 4.x introducerar oväntade buggar
-* **Beskrivning:** Båda versionerna är nya och har mindre community-erfarenhet bakom sig.
-* **Trigger:** Buggar i ramverken som blockerar utvecklingen.
-* **Mitigering:**
-    * Pin-version av varje beroende. Eskalering till nästa minor först efter att den varit ute > 1 månad.
-    * Bevaka Spring-bloggen och changelog.
-    * Möjlighet att backporta till Java 25/Spring 3.x i värsta fall.
+### T5 — Java 26 / Spring Boot 4.x introduces unexpected bugs
+* **Description:** Both versions are new and have less community experience behind them.
+* **Trigger:** Bugs in the frameworks that block development.
+* **Mitigation:**
+    * Pin the version of every dependency. Escalation to the next minor only after it has been out > 1 month.
+    * Monitor the Spring blog and changelog.
+    * Ability to backport to Java 25/Spring 3.x in the worst case.
 
-### T6 — Pub/Sub levererar dubbletter eller meddelanden ur ordning
-* **Beskrivning:** GCP Pub/Sub garanterar minst en leverans, inte exakt en. Dubbletter kan orsaka dubbel parsning.
-* **Trigger:** Dubbletter av kvitton i databasen.
-* **Mitigering:**
-    * Idempotenskrav i `parser-service` (arkitektur 10.5).
-    * Status-check (PENDING/COMPLETED) innan bearbetning startar.
-    * `receipt_id` används som idempotency key.
+### T6 — Pub/Sub delivers duplicates or messages out of order
+* **Description:** GCP Pub/Sub guarantees at-least-once delivery, not exactly once. Duplicates can cause double parsing.
+* **Trigger:** Duplicates of receipts in the database.
+* **Mitigation:**
+    * Idempotency requirement in `parser-service` (architecture 10.5).
+    * Status check (PENDING/COMPLETED) before processing starts.
+    * `receipt_id` used as an idempotency key.
 
-## Verksamhets- och produktrisker (V) <a name="verksamhetsrisker"></a>
+## Business and product risks (V) <a name="business-risks"></a>
 
-### V1 — Liten datavolym ger låga insikter
-* **Beskrivning:** För att insikter (inflationsindex, krympflation, globala priser) ska bli meningsfulla krävs en kritisk massa av kvitton.
-* **Trigger:** Användare upplever dashboarden som tom efter onboarding.
-* **Mitigering:**
-    * UX-designa "tomma tillstånd" som uppmuntrar uppladdning (se [ux-ui_vision.md](ux-ui_vision.md) avsnitt om tomma tillstånd).
-    * Importguide som låter användaren ladda upp flera kvitton i taget vid första onboardingen.
-    * Visa globala priser som referens när användarens egen data är liten.
+### V1 — Small data volume yields low insights
+* **Description:** For insights (inflation index, shrinkflation, global prices) to be meaningful a critical mass of receipts is required.
+* **Trigger:** Users experience the dashboard as empty after onboarding.
+* **Mitigation:**
+    * UX-design "empty states" that encourage uploads (see [ux-ui_vision.md](ux-ui_vision.md) section on empty states).
+    * Import guide that lets the user upload multiple receipts at once during the first onboarding.
+    * Show global prices as a reference when the user's own data is small.
 
-### V2 — Endast ICA-stöd begränsar målgruppen
-* **Beskrivning:** Tre av fyra svenska hushåll handlar i fler kedjor än ICA. Stöd för endast ICA via Kivra exkluderar majoriteten.
-* **Trigger:** Användarundersökning visar att avhopp sker eftersom "min butik stöds inte".
-* **Mitigering:**
-    * Plugin-arkitekturen (K20) prioriteras tidigt i backloggen efter MVP.
-    * Tydlig kommunikation: "Idag: ICA. På väg: Coop, Hemköp, Willys."
-    * Acceptera scopet under MVP — bättre att lansera med en butik som fungerar perfekt.
+### V2 — Only ICA support limits the target audience
+* **Description:** Three out of four Swedish households shop at more than just ICA. Supporting only ICA via Kivra excludes the majority.
+* **Trigger:** A user survey shows that drop-off happens because "my store is not supported".
+* **Mitigation:**
+    * The plug-in architecture (K20) is prioritised early in the backlog after MVP.
+    * Clear communication: "Today: ICA. Coming: Coop, Hemköp, Willys."
+    * Accept the scope during MVP — better to launch with one store that works perfectly.
 
-### V3 — Moms-kollen blir irrelevant
-* **Beskrivning:** Krav K15 är knutet till en specifik samhällsfråga (momssänkningen). När frågan svalnar tappar funktionen relevans.
-* **Trigger:** Användning av "Moms-kollen" sjunker över tid.
-* **Mitigering:**
-    * Bygg "Moms-kollen" som mall för tematiska vyer (se [ux-ui_vision.md](ux-ui_vision.md) avsnitt 2.5).
-    * Planera kommande tematiska kampanjer (t.ex. säsongsvariation, högtider, helgveckor).
+### V3 — Moms-kollen becomes irrelevant
+* **Description:** Requirement K15 is tied to a specific societal issue (the VAT reduction). When the issue cools off the feature loses relevance.
+* **Trigger:** Use of "Moms-kollen" declines over time.
+* **Mitigation:**
+    * Build "Moms-kollen" as a template for thematic views (see [ux-ui_vision.md](ux-ui_vision.md) section 2.5).
+    * Plan future thematic campaigns (e.g. seasonal variation, holidays, holiday weeks).
 
-## Säkerhets- och GDPR-risker (S) <a name="sakerhetsrisker"></a>
+## Security and GDPR risks (S) <a name="security-risks"></a>
 
-### S1 — Felaktig anonymisering läcker personuppgifter
-* **Beskrivning:** "Anonymiserad" data kan i värsta fall avanonymiseras om granulariteten är för fin (t.ex. exakt butik och exakt tidpunkt).
-* **Trigger:** Säkerhetsgranskning, eller anmälan från användare eller IMY.
-* **Mitigering:**
-    * Strikt separation i datamodellen (Privacy by Design, K8).
-    * Aggregering till ort + månad (arkitektur avsnitt 5).
-    * Kodgranskning av all kod som skriver till `GLOBAL_PRICE_POINTS`.
-    * Se [dpia.md](dpia.md) för fullständig analys.
+### S1 — Incorrect anonymisation leaks personal data
+* **Description:** "Anonymised" data may, in the worst case, be de-anonymised if the granularity is too fine (e.g. exact store and exact timestamp).
+* **Trigger:** Security review, or report from a user or IMY.
+* **Mitigation:**
+    * Strict separation in the data model (Privacy by Design, K8).
+    * Aggregation to city + month (architecture section 5).
+    * Code review of all code that writes to `GLOBAL_PRICE_POINTS`.
+    * See [dpia.md](dpia.md) for the full analysis.
 
-### S2 — Inloggningsflöde sårbart
-* **Beskrivning:** Spring Security är robust men felkonfiguration kan introducera sårbarheter (sessionhijack, missad CSRF, svaga lösenord).
-* **Trigger:** Penetrationstest hittar brister, eller incident i loggar (många misslyckade inloggningar från samma IP).
-* **Mitigering:**
-    * Använd Spring Securitys standardkonfiguration så långt som möjligt.
-    * BCrypt för lösenord, sessionsregenerering efter inloggning, HTTPS via Cloud Run.
-    * Säkerhetstester i CI (se [non-functional-requirements.md](non-functional-requirements.md)).
+### S2 — Sign-in flow is vulnerable
+* **Description:** Spring Security is robust but misconfiguration can introduce vulnerabilities (session hijack, missed CSRF, weak passwords).
+* **Trigger:** A penetration test finds flaws, or an incident in the logs (many failed sign-ins from the same IP).
+* **Mitigation:**
+    * Use Spring Security's default configuration as much as possible.
+    * BCrypt for passwords, session regeneration after sign-in, HTTPS via Cloud Run.
+    * Security tests in CI (see [non-functional-requirements.md](non-functional-requirements.md)).
 
-### S3 — Användare ger samtycke utan att förstå
-* **Beskrivning:** Om samtyckes-flödet är otydligt blir samtycket inte giltigt enligt GDPR.
-* **Trigger:** Användartester visar förvirring, eller IMY-klagomål.
-* **Mitigering:**
-    * UX-text granskas av juridik och vanlig användare.
-    * Samtycke är aldrig förkryssat (GDPR-checklista i [gdpr.md](gdpr.md)).
-    * Möjlighet att dra tillbaka samtycke när som helst i profilen.
+### S3 — Users give consent without understanding
+* **Description:** If the consent flow is unclear the consent is not valid under GDPR.
+* **Trigger:** User tests reveal confusion, or IMY complaint.
+* **Mitigation:**
+    * UX text reviewed by legal and an ordinary user.
+    * Consent is never pre-ticked (GDPR checklist in [gdpr.md](gdpr.md)).
+    * Ability to withdraw consent at any time in the profile.
 
-### S4 — Saknad beredskap för incidenter
-* **Beskrivning:** GDPR Artikel 33 kräver att personuppgiftsincidenter rapporteras till IMY inom 72 timmar.
-* **Trigger:** Incident inträffar utan att rutin finns.
-* **Mitigering:**
-    * Dokumentera incidenthanteringsprocess (delprocess i [dpia.md](dpia.md)).
-    * Larm i GCP Cloud Monitoring för anomalier (många failade requests, datalek-mönster).
-    * Kontaktlista och mall för IMY-anmälan finns färdig.
+### S4 — Lack of incident readiness
+* **Description:** GDPR Article 33 requires personal data incidents to be reported to IMY within 72 hours.
+* **Trigger:** Incident occurs without a procedure in place.
+* **Mitigation:**
+    * Document the incident handling process (sub-process in [dpia.md](dpia.md)).
+    * Alerts in GCP Cloud Monitoring for anomalies (many failed requests, data-leak patterns).
+    * Contact list and template for the IMY notification are ready.
 
-## Leverantörs- och beroenderisker (L) <a name="leverantorsrisker"></a>
+## Supplier and dependency risks (L) <a name="supplier-risks"></a>
 
-### L1 — Kivra ändrar villkor eller blockerar kvitton
-* **Beskrivning:** Kivra är ett externt företag och kan begränsa nedladdning av kvitton.
-* **Trigger:** Användare rapporterar att de inte kan ladda ner kvitton.
-* **Mitigering:**
-    * MVP är användardriven uppladdning, inte automatisk integration. Risken är därmed på Kivras användare, inte oss.
-    * Reservplan: stöd för OCR av papperskvitton (K17) öppnar alternativ inmatning.
+### L1 — Kivra changes terms or blocks receipts
+* **Description:** Kivra is an external company and may restrict receipt downloads.
+* **Trigger:** Users report that they cannot download receipts.
+* **Mitigation:**
+    * The MVP is user-driven upload, not automatic integration. The risk is therefore borne by Kivra's users, not by us.
+    * Backup plan: support for OCR of paper receipts (K17) opens an alternative input.
 
-### L2 — Neon ändrar prisplan eller avvecklar gratis-nivå
-* **Beskrivning:** Neon är relativt ungt företag.
-* **Trigger:** Prishöjning eller mejl om förändrade villkor.
-* **Mitigering:**
-    * All Postgres-användning är standard. Migration till Cloud SQL eller Supabase är möjlig.
-    * Terraform-providern abstraherar provisioneringen.
+### L2 — Neon changes pricing plan or discontinues the free tier
+* **Description:** Neon is a relatively young company.
+* **Trigger:** Price increase or e-mail about changed terms.
+* **Mitigation:**
+    * All Postgres usage is standard. Migration to Cloud SQL or Supabase is possible.
+    * The Terraform provider abstracts the provisioning.
 
-### L3 — GCP höjer priser eller drar in tjänster
-* **Beskrivning:** Mindre sannolikt, men möjligt särskilt för nyare tjänster.
-* **Trigger:** GCP-meddelande eller prisförändring.
-* **Mitigering:**
-    * Pub/Sub, Cloud Run och Cloud Storage är välimplementerade standarder.
-    * Möjligt att byta plattform med rimlig insats om allt går via Terraform.
+### L3 — GCP raises prices or removes services
+* **Description:** Less likely, but possible especially for newer services.
+* **Trigger:** GCP announcement or price change.
+* **Mitigation:**
+    * Pub/Sub, Cloud Run and Cloud Storage are well-implemented standards.
+    * Possible to switch platforms with reasonable effort if everything goes via Terraform.
 
-## Operationella risker (O) <a name="operationella-risker"></a>
+## Operational risks (O) <a name="operational-risks"></a>
 
 ### O1 — Single developer (key person dependency)
-* **Beskrivning:** Endast en utvecklare på projektet. Sjukdom eller bortavaro stoppar all utveckling.
-* **Trigger:** Projektledaren blir otillgänglig.
-* **Mitigering:**
-    * Förstudien (detta dokumentset) är skriven så att en ny utvecklare snabbt kan komma in.
-    * All kod, infra och dokumentation finns publikt i Git.
-    * ADR-light i [open-decisions.md](open-decisions.md) bevarar resonemang bakom beslut.
+* **Description:** Only one developer on the project. Illness or absence stops all development.
+* **Trigger:** The project lead becomes unavailable.
+* **Mitigation:**
+    * The pre-study (this document set) is written so that a new developer can get up to speed quickly.
+    * All code, infra and documentation is publicly in Git.
+    * ADR-light in [open-decisions.md](open-decisions.md) preserves the reasoning behind decisions.
 
-### O2 — Driftsavbrott på Cloud Run eller Neon
-* **Beskrivning:** Inga SLA-garantier i MVP-fasen.
-* **Trigger:** Användare rapporterar att tjänsten är nere.
-* **Mitigering:**
-    * Multi-zon hantering ingår i Cloud Runs grunddrift.
-    * Neon-snapshot frekvens beskrivs i [non-functional-requirements.md](non-functional-requirements.md).
-    * Statussida vid större avbrott (Could-have efter MVP).
+### O2 — Outage on Cloud Run or Neon
+* **Description:** No SLA guarantees in the MVP phase.
+* **Trigger:** Users report that the service is down.
+* **Mitigation:**
+    * Multi-zone handling is part of Cloud Run's base operation.
+    * Neon snapshot frequency is described in [non-functional-requirements.md](non-functional-requirements.md).
+    * Status page during major outages (Could-have post-MVP).
 
-### O3 — Säkerhetspatch missas
-* **Beskrivning:** Spring-, Java- eller container-CVE missas.
-* **Trigger:** Dependabot-larm ignoreras eller passar förbi.
-* **Mitigering:**
-    * Dependabot eller Renovate aktiverat på repo (krav i Fas 1, läggs till i checklistan).
-    * Säkerhetsuppdateringar prioriteras före nya features.
+### O3 — Security patch is missed
+* **Description:** Spring, Java or container CVE is missed.
+* **Trigger:** Dependabot alerts are ignored or slip through.
+* **Mitigation:**
+    * Dependabot or Renovate enabled on the repo (requirement in Phase 1, added to the checklist).
+    * Security updates are prioritised over new features.
 
-## Ekonomiska risker (E) <a name="ekonomiska-risker"></a>
+## Financial risks (E) <a name="financial-risks"></a>
 
-### E1 — Molnkostnader skenar
-* **Beskrivning:** Felkonfigurerad autoscaling eller loop kan generera höga räkningar.
-* **Trigger:** Månadsfaktura överstiger budget med > 50 %.
-* **Mitigering:**
-    * Budgetlarm i GCP (90 % och 100 % av månadsbudget enligt [cost-estimate.md](cost-estimate.md)).
-    * Tak (`maxScale`) på Cloud Run-instanser.
-    * Pub/Sub-meddelanden filtreras så att DLQ inte kan loopa.
+### E1 — Cloud costs spiral out of control
+* **Description:** Misconfigured autoscaling or a loop can generate high bills.
+* **Trigger:** Monthly invoice exceeds budget by > 50 %.
+* **Mitigation:**
+    * Budget alerts in GCP (90 % and 100 % of the monthly budget per [cost-estimate.md](cost-estimate.md)).
+    * Caps (`maxScale`) on Cloud Run instances.
+    * Pub/Sub messages are filtered so that the DLQ cannot loop.
 
-### E2 — OCR/Vision API blir dyrare än förväntat
-* **Beskrivning:** K17 (OCR) är prissatt per dokument och kan bli dyrt vid skala.
-* **Trigger:** K17 implementeras och kostnaden överstiger budget.
-* **Mitigering:**
-    * K17 är "Could have" och aktiveras inte i MVP.
-    * När K17 aktiveras: testa på liten volym först, kostnadslarm.
-    * Möjlighet att skifta mellan Google Vision och Gemini Vision beroende på pris/prestanda.
+### E2 — OCR/Vision API becomes more expensive than expected
+* **Description:** K17 (OCR) is priced per document and can become expensive at scale.
+* **Trigger:** K17 is implemented and the cost exceeds budget.
+* **Mitigation:**
+    * K17 is "Could have" and is not activated in the MVP.
+    * When K17 is activated: test on a small volume first, cost alerts.
+    * Ability to switch between Google Vision and Gemini Vision depending on price/performance.

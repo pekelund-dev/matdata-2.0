@@ -1,161 +1,161 @@
-# Öppna beslut och ADR-light: Matdata 2.0
+# Open decisions and ADR-light: Matdata 2.0
 
 **Version:** 1.0
-**Senast uppdaterad:** 2026-06-29
-**Status:** Förstudie klar för granskning
+**Last updated:** 2026-06-29
+**Status:** Pre-study ready for review
 
-Detta dokument samlar arkitekturbeslut (Architecture Decision Records, ADR) i en lättviktsversion. Varje beslut har en tydlig status, kontext och konsekvenser. Format är inspirerat av Michael Nygards ADR-modell.
+This document collects architecture decisions (Architecture Decision Records, ADR) in a lightweight form. Each decision has a clear status, context and consequences. The format is inspired by Michael Nygard's ADR model.
 
-## Innehåll
-- [Status-flaggor](#status)
-- [Stängda beslut](#stangda)
+## Contents
+- [Status flags](#status)
+- [Closed decisions](#closed)
   - [ADR-001 — Monorepo](#adr-001)
-  - [ADR-002 — Två tjänster bakom Pub/Sub](#adr-002)
-  - [ADR-003 — Neon som primär databas](#adr-003)
+  - [ADR-002 — Two services behind Pub/Sub](#adr-002)
+  - [ADR-003 — Neon as the primary database](#adr-003)
   - [ADR-004 — Java 26 + Spring Boot 4.x](#adr-004)
-  - [ADR-005 — Thymeleaf + HTMX istället för SPA](#adr-005)
-  - [ADR-006 — Terraform för all infrastruktur](#adr-006)
-  - [ADR-007 — Aggregeringsgranularitet "ort + månad" för anonym statistik](#adr-007)
-  - [ADR-008 — Default 30 dagars PDF-retention](#adr-008)
-  - [ADR-009 — Autentiseringsstrategi: lokal först, OAuth2 i fas 4](#adr-009)
-  - [ADR-010 — Reposnamn: matdata-monorepo](#adr-010)
-- [Öppna beslut](#oppna)
-  - [ADR-011 — Bibliotek för diagram (Chart.js eller alternativ)](#adr-011)
-  - [ADR-012 — Sökarkitektur (LIKE, pg_trgm eller dedikerad sökmotor)](#adr-012)
-  - [ADR-013 — Källa för produktkategorier](#adr-013)
-  - [ADR-014 — Verktyg för accessibility-tester](#adr-014)
-  - [ADR-015 — Strategi för transaktionell e-post](#adr-015)
-- [Tillbakavisade förslag](#avslag)
-- [Hur du föreslår en ny ADR](#hur)
+  - [ADR-005 — Thymeleaf + HTMX instead of SPA](#adr-005)
+  - [ADR-006 — Terraform for all infrastructure](#adr-006)
+  - [ADR-007 — Aggregation granularity "city + month" for anonymous statistics](#adr-007)
+  - [ADR-008 — Default 30-day PDF retention](#adr-008)
+  - [ADR-009 — Authentication strategy: local first, OAuth2 in Phase 4](#adr-009)
+  - [ADR-010 — Repository name: matdata-monorepo](#adr-010)
+- [Open decisions](#open)
+  - [ADR-011 — Charting library (Chart.js or alternative)](#adr-011)
+  - [ADR-012 — Search architecture (LIKE, pg_trgm or dedicated search engine)](#adr-012)
+  - [ADR-013 — Source for product categories](#adr-013)
+  - [ADR-014 — Tooling for accessibility tests](#adr-014)
+  - [ADR-015 — Strategy for transactional e-mail](#adr-015)
+- [Rejected proposals](#rejected)
+- [How to propose a new ADR](#how)
 
-## Status-flaggor <a name="status"></a>
-* **Stängd:** Beslut är fattat och dokumenterat. Implementation följer.
-* **Öppen:** Beslut behöver fattas. Triggerdatum (deadline) anges.
-* **Avslagen:** Alternativ som övervägdes men inte valdes. Bevaras för historik.
+## Status flags <a name="status"></a>
+* **Closed:** Decision has been made and documented. Implementation follows.
+* **Open:** Decision needs to be made. The trigger date (deadline) is stated.
+* **Rejected:** Alternative that was considered but not chosen. Kept for history.
 
-## Stängda beslut <a name="stangda"></a>
+## Closed decisions <a name="closed"></a>
 
 ### ADR-001 — Monorepo <a name="adr-001"></a>
-* **Status:** Stängd 2026-06-15
-* **Kontext:** Behöver lagring av två Spring Boot-tjänster, Terraform och dokumentation.
-* **Beslut:** Använd ett monorepo med tydlig katalogstruktur. Reponamnet är `matdata-monorepo`. Se [architecture.md](architecture.md) avsnitt 12.
-* **Konsekvenser:** Enklare CI/CD och delad versionering. Kräver disciplin med katalogstrukturen och pipeline-filter (`paths:` i GitHub Actions) för att inte bygga om allt vid varje ändring.
+* **Status:** Closed 2026-06-15
+* **Context:** We need storage for two Spring Boot services, Terraform and documentation.
+* **Decision:** Use a monorepo with a clear directory structure. The repository name is `matdata-monorepo`. See [architecture.md](architecture.md) section 12.
+* **Consequences:** Simpler CI/CD and shared versioning. Requires discipline with the directory structure and pipeline filters (`paths:` in GitHub Actions) to avoid rebuilding everything on every change.
 
-### ADR-002 — Två tjänster bakom Pub/Sub <a name="adr-002"></a>
-* **Status:** Stängd 2026-06-15
-* **Kontext:** PDF-parsing är CPU- och minnesintensiv. Att låta `core-service` blockeras av detta försämrar svarstider.
-* **Beslut:** Separera i `core-service` (webb) och `parser-service` (worker) som kommunicerar via GCP Pub/Sub. Se [architecture.md](architecture.md) avsnitt 2.1.
-* **Konsekvenser:** Distribuerad arkitektur kräver tracing (NFR-O1), idempotenshantering (Pub/Sub levererar minst en gång) och DLQ.
+### ADR-002 — Two services behind Pub/Sub <a name="adr-002"></a>
+* **Status:** Closed 2026-06-15
+* **Context:** PDF parsing is CPU- and memory-intensive. Letting `core-service` be blocked by it degrades response times.
+* **Decision:** Separate into `core-service` (web) and `parser-service` (worker) that communicate via GCP Pub/Sub. See [architecture.md](architecture.md) section 2.1.
+* **Consequences:** Distributed architecture requires tracing (NFR-O1), idempotency handling (Pub/Sub delivers at least once) and a DLQ.
 
-### ADR-003 — Neon som primär databas <a name="adr-003"></a>
-* **Status:** Stängd 2026-06-15
-* **Kontext:** Behöver serverless PostgreSQL med databas-branchning för PR-miljöer.
-* **Beslut:** Neon väljs. Se [architecture.md](architecture.md) avsnitt 2.3.
-* **Konsekvenser:** Leverantörsrisk dokumenterad i [risk-register.md](risk-register.md) L2. Migration till Cloud SQL eller Supabase är möjlig eftersom vi använder standard-Postgres.
+### ADR-003 — Neon as the primary database <a name="adr-003"></a>
+* **Status:** Closed 2026-06-15
+* **Context:** We need serverless PostgreSQL with database branching for PR environments.
+* **Decision:** Neon is chosen. See [architecture.md](architecture.md) section 2.3.
+* **Consequences:** Supplier risk documented in [risk-register.md](risk-register.md) L2. Migration to Cloud SQL or Supabase is possible because we use standard Postgres.
 
 ### ADR-004 — Java 26 + Spring Boot 4.x <a name="adr-004"></a>
-* **Status:** Stängd 2026-06-15
-* **Kontext:** Projektet är delvis ett kompetensutvecklingsprojekt. Java 26 och Spring Boot 4.x ger Virtual Threads, Pattern Matching och modern observabilitet.
-* **Beslut:** Använd senaste stabila Java 26 och Spring Boot 4.x. Se [architecture.md](architecture.md) avsnitt 2.1.
-* **Konsekvenser:** Mindre community-erfarenhet (risk T5 i [risk-register.md](risk-register.md)). Möjlighet att backporta till Java 25 om kritiska buggar uppstår.
+* **Status:** Closed 2026-06-15
+* **Context:** The project is partly a skills-development project. Java 26 and Spring Boot 4.x provide Virtual Threads, Pattern Matching and modern observability.
+* **Decision:** Use the latest stable Java 26 and Spring Boot 4.x. See [architecture.md](architecture.md) section 2.1.
+* **Consequences:** Less community experience (risk T5 in [risk-register.md](risk-register.md)). Ability to backport to Java 25 if critical bugs arise.
 
-### ADR-005 — Thymeleaf + HTMX istället för SPA <a name="adr-005"></a>
-* **Status:** Stängd 2026-06-15
-* **Kontext:** Vi vill ha SPA-känsla utan SPA:s komplexitet. Backend-renderad HTML passar Java-stacken.
-* **Beslut:** Thymeleaf för server-side rendering, HTMX för dynamiska uppdateringar. Se [architecture.md](architecture.md) avsnitt 2.2.
-* **Konsekvenser:** Snabbare utveckling, mindre kod. Vissa interaktioner som realtidssökning kräver lite mer omsorg om man vill ha helt klientside-första.
+### ADR-005 — Thymeleaf + HTMX instead of SPA <a name="adr-005"></a>
+* **Status:** Closed 2026-06-15
+* **Context:** We want an SPA feel without the SPA complexity. Backend-rendered HTML fits the Java stack.
+* **Decision:** Thymeleaf for server-side rendering, HTMX for dynamic updates. See [architecture.md](architecture.md) section 2.2.
+* **Consequences:** Faster development, less code. Some interactions like real-time search require a little more care if you want a fully client-side-first experience.
 
-### ADR-006 — Terraform för all infrastruktur <a name="adr-006"></a>
-* **Status:** Stängd 2026-06-15
-* **Kontext:** Vi vill kunna återskapa miljöer (PR, dev, prod) deterministiskt.
-* **Beslut:** Allt infrastrukturarbete beskrivs i Terraform. Inga manuella ändringar i GCP-konsolen utöver brandkårsuppdrag. Se [architecture.md](architecture.md) avsnitt 8.
-* **Konsekvenser:** Längre ledtid för enklare ändringar i utbyte mot reproducerbarhet.
+### ADR-006 — Terraform for all infrastructure <a name="adr-006"></a>
+* **Status:** Closed 2026-06-15
+* **Context:** We need to be able to recreate environments (PR, dev, prod) deterministically.
+* **Decision:** All infrastructure work is described in Terraform. No manual changes in the GCP console outside fire-drill missions. See [architecture.md](architecture.md) section 8.
+* **Consequences:** Longer lead time for simpler changes in exchange for reproducibility.
 
-### ADR-007 — Aggregeringsgranularitet "ort + månad" för anonym statistik <a name="adr-007"></a>
-* **Status:** Stängd 2026-06-20
-* **Kontext:** För att inte göra anonymiserad data avanonymiserbar måste granulariteten balanseras: tillräckligt grov för att skydda individen, tillräckligt fin för att ge insikter.
-* **Beslut:** Ort (t.ex. "Malmö", inte specifik butik) + år-månad (t.ex. "2026-06"). Se [architecture.md](architecture.md) avsnitt 5 och [gdpr.md](gdpr.md) avsnitt 2.2.
-* **Konsekvenser:** Globala statistikvyer visar trender per ort och månad. Diskussionsmaterial som tidigare omtalade "vecka/månad" i [gdpr.md](gdpr.md) har konsoliderats till "månad".
+### ADR-007 — Aggregation granularity "city + month" for anonymous statistics <a name="adr-007"></a>
+* **Status:** Closed 2026-06-20
+* **Context:** To avoid making anonymised data re-identifiable the granularity must be balanced: coarse enough to protect the individual, fine enough to provide insights.
+* **Decision:** City (e.g. "Malmö", not specific store) + year-month (e.g. "2026-06"). See [architecture.md](architecture.md) section 5 and [gdpr.md](gdpr.md) section 2.2.
+* **Consequences:** Global statistics views show trends per city and month. Discussion material that previously mentioned "week/month" in [gdpr.md](gdpr.md) has been consolidated to "month".
 
-### ADR-008 — Default 30 dagars PDF-retention <a name="adr-008"></a>
-* **Status:** Stängd 2026-06-20
-* **Kontext:** Användaren behöver inte se originalkvittot för evigt. Lagring av PDF medför både kostnads- och dataskyddsbelastning.
-* **Beslut:** Default raderas PDF efter 30 dagar via lifecycle policy på Cloud Storage. Användaren kan välja att behålla per uppladdning. Se [non-functional-requirements.md](non-functional-requirements.md) NFR-D1.
-* **Konsekvenser:** Lägre lagringskostnad ([cost-estimate.md](cost-estimate.md)), minskad dataskyddsexponering ([dpia.md](dpia.md) DPIA-R5).
+### ADR-008 — Default 30-day PDF retention <a name="adr-008"></a>
+* **Status:** Closed 2026-06-20
+* **Context:** The user does not need to see the original receipt forever. PDF storage carries both a cost and a data-protection burden.
+* **Decision:** By default PDFs are deleted after 30 days via a lifecycle policy on Cloud Storage. The user can choose to keep them per upload. See [non-functional-requirements.md](non-functional-requirements.md) NFR-D1.
+* **Consequences:** Lower storage cost ([cost-estimate.md](cost-estimate.md)), reduced data-protection exposure ([dpia.md](dpia.md) DPIA-R5).
 
-### ADR-009 — Autentiseringsstrategi: lokal först, OAuth2 i fas 4 <a name="adr-009"></a>
-* **Status:** Stängd 2026-06-29
-* **Kontext:** [architecture.md](architecture.md) avsnitt 9 hade tidigare beskrivit detta som ett öppet beslut med två alternativ.
-* **Beslut:** Implementera lokal autentisering (Spring Security form login med BCrypt) i Fas 4. OAuth2 via Google införs i en senare iteration som kompletterande inloggningsväg. Datamodellen är redan utformad för att stödja båda.
-* **Konsekvenser:** Snabbare MVP utan extern beroende. Användaren får mer kontroll men måste hantera lösenord. Risk T6 (Pub/Sub) och S2 (sessionhijack) hanteras enligt [risk-register.md](risk-register.md).
+### ADR-009 — Authentication strategy: local first, OAuth2 in Phase 4 <a name="adr-009"></a>
+* **Status:** Closed 2026-06-29
+* **Context:** [architecture.md](architecture.md) section 9 previously described this as an open decision with two alternatives.
+* **Decision:** Implement local authentication (Spring Security form login with BCrypt) in Phase 4. OAuth2 via Google is introduced in a later iteration as a complementary sign-in path. The data model is already designed to support both.
+* **Consequences:** Faster MVP without an external dependency. The user gets more control but must manage a password. Risks T6 (Pub/Sub) and S2 (session hijack) are handled per [risk-register.md](risk-register.md).
 
-### ADR-010 — Reposnamn: matdata-monorepo <a name="adr-010"></a>
-* **Status:** Stängd 2026-06-29
-* **Kontext:** Tidigare dokument refererade både `matdata-monorepo` och `matdata/`. Inkonsistens skapar förvirring.
-* **Beslut:** Reposnamn på GitHub är `matdata-monorepo`. Katalogstrukturen inom repot speglas i [architecture.md](architecture.md) avsnitt 12.
-* **Konsekvenser:** Alla dokument refererar nu samma namn. CI/CD-konfigurationer som anger reponamn kan skrivas konsistent.
+### ADR-010 — Repository name: matdata-monorepo <a name="adr-010"></a>
+* **Status:** Closed 2026-06-29
+* **Context:** Earlier documents referenced both `matdata-monorepo` and `matdata/`. Inconsistency creates confusion.
+* **Decision:** The GitHub repository name is `matdata-monorepo`. The internal directory structure is mirrored in [architecture.md](architecture.md) section 12.
+* **Consequences:** All documents now reference the same name. CI/CD configurations that reference the repository name can be written consistently.
 
-## Öppna beslut <a name="oppna"></a>
+## Open decisions <a name="open"></a>
 
-### ADR-011 — Bibliotek för diagram <a name="adr-011"></a>
-* **Status:** Öppen. Beslut behövs senast vid start av Fas 4.
-* **Kontext:** [ux-ui_vision.md](ux-ui_vision.md) nämner Chart.js. Inget val är formellt fattat.
-* **Alternativ:**
-    * Chart.js (lättvikt, populär, fungerar bra med statisk HTML).
-    * Apache ECharts (rikare funktionalitet, större bibliotek).
-    * Server-side genererad SVG (helt JS-fri, mer arbete vid interaktivitet).
-* **Beslutsunderlag som krävs:** Krav på interaktivitet (hover, zoom) och datavolym per graf.
+### ADR-011 — Charting library <a name="adr-011"></a>
+* **Status:** Open. Decision needed at the latest at the start of Phase 4.
+* **Context:** [ux-ui_vision.md](ux-ui_vision.md) mentions Chart.js. No choice has been formally made.
+* **Alternatives:**
+    * Chart.js (lightweight, popular, works well with static HTML).
+    * Apache ECharts (richer functionality, larger library).
+    * Server-side generated SVG (entirely JS-free, more work for interactivity).
+* **Decision inputs required:** Requirements for interactivity (hover, zoom) and data volume per chart.
 
-### ADR-012 — Sökarkitektur <a name="adr-012"></a>
-* **Status:** Öppen. Beslut behövs vid start av Fas 4.
-* **Kontext:** Produktsök ([ux-ui_vision.md](ux-ui_vision.md) avsnitt 2.3) kräver fuzzy autocomplete på produktnamn.
-* **Alternativ:**
-    * PostgreSQL `ILIKE` med prefixindex (enklast, troligt tillräckligt för MVP).
-    * `pg_trgm` extension i Postgres för trigram-baserad sök.
-    * Meilisearch eller liknande sökmotor (overkill för MVP).
-* **Beslutsunderlag som krävs:** Antal produkter och latenskrav (NFR-P4 säger < 200 ms p95).
+### ADR-012 — Search architecture <a name="adr-012"></a>
+* **Status:** Open. Decision needed at the start of Phase 4.
+* **Context:** Product search ([ux-ui_vision.md](ux-ui_vision.md) section 2.3) requires fuzzy autocomplete on product names.
+* **Alternatives:**
+    * PostgreSQL `ILIKE` with prefix index (simplest, likely sufficient for MVP).
+    * `pg_trgm` extension in Postgres for trigram-based search.
+    * Meilisearch or similar search engine (overkill for MVP).
+* **Decision inputs required:** Number of products and latency requirement (NFR-P4 says < 200 ms p95).
 
-### ADR-013 — Källa för produktkategorier <a name="adr-013"></a>
-* **Status:** Öppen. Beslut behövs vid start av Fas 4 eller när dashboard ska visa kategorinedbrytning.
-* **Kontext:** [ux-ui_vision.md](ux-ui_vision.md) avsnitt 2.1 visar en donut-graf med kategorinedbrytning. `PRODUCTS.category` finns i datamodellen men har ingen källa.
-* **Alternativ:**
-    * Manuell mappning från EAN-prefix-tabell.
-    * Använda extern produktkatalog/API (kan tillkomma licens- och kostnadsfrågor).
-    * AI-baserad klassificering på produktnamn vid första uppladdning.
-    * Användardriven kategorisering (community moderation).
-* **Beslutsunderlag som krävs:** Volym av nya produkter per månad, krav på precision i kategorin.
+### ADR-013 — Source for product categories <a name="adr-013"></a>
+* **Status:** Open. Decision needed at the start of Phase 4 or when the dashboard is to show a category breakdown.
+* **Context:** [ux-ui_vision.md](ux-ui_vision.md) section 2.1 shows a donut chart with category breakdown. `PRODUCTS.category` exists in the data model but has no source.
+* **Alternatives:**
+    * Manual mapping from an EAN prefix table.
+    * Use an external product catalogue/API (may add licence and cost questions).
+    * AI-based classification on the product name at first upload.
+    * User-driven categorisation (community moderation).
+* **Decision inputs required:** Volume of new products per month, precision requirement for the category.
 
-### ADR-014 — Verktyg för accessibility-tester <a name="adr-014"></a>
-* **Status:** Öppen. Beslut behövs vid start av Fas 4.
-* **Kontext:** [non-functional-requirements.md](non-functional-requirements.md) NFR-AC4 kräver linter för semantisk HTML.
-* **Alternativ:**
-    * `axe-core` via Playwright (kräver Playwright i Fas 4).
-    * `pa11y` (Node-baserat, fristående).
-    * Manuell granskning med skärmläsare (komplement, inte alternativ).
-* **Beslutsunderlag som krävs:** Slutgiltigt val av e2e-verktyg (Playwright förespråkas i projektplanen).
+### ADR-014 — Tooling for accessibility tests <a name="adr-014"></a>
+* **Status:** Open. Decision needed at the start of Phase 4.
+* **Context:** [non-functional-requirements.md](non-functional-requirements.md) NFR-AC4 requires a linter for semantic HTML.
+* **Alternatives:**
+    * `axe-core` via Playwright (requires Playwright in Phase 4).
+    * `pa11y` (Node-based, standalone).
+    * Manual review with a screen reader (complement, not alternative).
+* **Decision inputs required:** Final choice of e2e tooling (Playwright is advocated in the project plan).
 
-### ADR-015 — Strategi för transaktionell e-post <a name="adr-015"></a>
-* **Status:** Öppen. Beslut behövs när lösenordsåterställning ska byggas (post-MVP).
-* **Kontext:** Lösenordsåterställning kräver e-postutskick. Spring stödjer JavaMail, men SMTP-leverantör måste väljas.
-* **Alternativ:**
-    * Brevo (gratis upp till 300 mejl/dag).
-    * Resend (modern, generös free tier).
-    * Postmark (premium, hög leveransbarhet).
-    * Egen SMTP-server (avråds, dåligt rykte ur leveransbarhetssynpunkt).
-* **Beslutsunderlag som krävs:** Volym, kostnad och leveransbarhetstester.
+### ADR-015 — Strategy for transactional e-mail <a name="adr-015"></a>
+* **Status:** Open. Decision needed when password reset is to be built (post-MVP).
+* **Context:** Password reset requires sending e-mail. Spring supports JavaMail, but an SMTP provider must be chosen.
+* **Alternatives:**
+    * Brevo (free up to 300 e-mails/day).
+    * Resend (modern, generous free tier).
+    * Postmark (premium, high deliverability).
+    * Own SMTP server (discouraged, poor reputation for deliverability).
+* **Decision inputs required:** Volume, cost and deliverability tests.
 
-## Tillbakavisade förslag <a name="avslag"></a>
+## Rejected proposals <a name="rejected"></a>
 
-| Datum | Förslag | Skäl till avslag |
+| Date | Proposal | Reason for rejection |
 | --- | --- | --- |
-| 2026-06-15 | Använda Kotlin istället för Java | Avviker från målet att djupdyka i moderna Java-funktioner (kompetensutveckling). |
-| 2026-06-15 | Native iOS/Android-appar i MVP | För hög kostnad och komplexitet. Webb/PWA räcker (krav K19, Won't have). |
-| 2026-06-20 | Direkt integration med Kivras API | Inte publikt tillgängligt. Användardriven uppladdning är enklare och mer transparent (krav K18, Won't have). |
-| 2026-06-20 | Klientside-analys (Google Analytics) | Kräver cookie-banner. Server-side observability via OpenTelemetry valdes istället (se [gdpr.md](gdpr.md) avsnitt 4.3). |
+| 2026-06-15 | Use Kotlin instead of Java | Deviates from the goal of going deep into modern Java features (skills development). |
+| 2026-06-15 | Native iOS/Android apps in the MVP | Too high a cost and complexity. Web/PWA is enough (requirement K19, Won't have). |
+| 2026-06-20 | Direct integration with Kivra's API | Not publicly available. User-driven upload is simpler and more transparent (requirement K18, Won't have). |
+| 2026-06-20 | Client-side analytics (Google Analytics) | Requires a cookie banner. Server-side observability via OpenTelemetry was chosen instead (see [gdpr.md](gdpr.md) section 4.3). |
 
-## Hur du föreslår en ny ADR <a name="hur"></a>
+## How to propose a new ADR <a name="how"></a>
 
-1. Skapa en sektion längst ner under [Öppna beslut](#oppna) med nästa lediga `ADR-XXX`-nummer.
-2. Beskriv **Kontext** (varför behövs ett beslut), **Alternativ** (minst två), och **Beslutsunderlag som krävs**.
-3. Öppna en Pull Request med ändringen och länka relevanta dokument.
-4. När beslut är fattat: ändra status till **Stängd**, flytta till [Stängda beslut](#stangda), uppdatera berörda dokument och länka tillbaka till ADR.
+1. Create a section at the bottom of [Open decisions](#open) with the next free `ADR-XXX` number.
+2. Describe **Context** (why a decision is needed), **Alternatives** (at least two) and **Decision inputs required**.
+3. Open a Pull Request with the change and link the relevant documents.
+4. When the decision has been made: change the status to **Closed**, move it to [Closed decisions](#closed), update the affected documents and link back to the ADR.
