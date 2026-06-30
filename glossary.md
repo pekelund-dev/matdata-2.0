@@ -1,87 +1,85 @@
-# Ordlista: Matdata 2.0
+# Glossary: Matdata 2.0
 
-Denna ordlista samlar termer, akronymer och produktspecifika begrepp som används i förstudiens dokument. Syftet är att alla bidragsgivare ska tolka begreppen på samma sätt.
+This glossary collects terms, acronyms and product-specific concepts used in the pre-study documents. Its purpose is to ensure that all contributors interpret the concepts in the same way.
 
-## Innehåll
+## Contents
 - [A–E](#aE)
 - [F–L](#fL)
 - [M–S](#mS)
-- [T–Ö](#tO)
+- [T–Z](#tZ)
 
 ## A–E <a name="aE"></a>
 
-| Term | Förklaring |
+| Term | Explanation |
 | --- | --- |
-| **Apache PDFBox** | Java-bibliotek för att läsa och extrahera text ur PDF-filer. Används i `parser-service`. |
-| **C4-modell** | Notation av Simon Brown för att beskriva mjukvaruarkitektur i fyra nivåer: Context, Container, Component, Code. |
-| **Canary-test** | Återkommande test mot en känd referens (t.ex. en sparad PDF) som larmar om resultatet ändras oavsiktligt. |
-| **Cloud Run** | GCP-tjänst för att köra containrar serverless med per-request-betalning. |
-| **Cloud Storage (GCS)** | GCP:s objektlagring för filer. Används i Matdata för temporär PDF-lagring. |
-| **Cookie-banner** | Modal för cookie-samtycke. Matdata strävar efter att undvika behovet helt (se [gdpr.md](gdpr.md)). |
-| **Core Service** | Spring Boot-applikation som driver webbgränssnittet, autentisering och API:er. |
-| **Crowdsourcing** | I Matdata: aggregering av anonymiserade priser från alla samtyckande användare. |
-| **DLQ (Dead Letter Queue)** | Pub/Sub-topic dit meddelanden flyttas efter ett konfigurerat antal misslyckade leveransförsök. |
-| **DPIA** | Data Protection Impact Assessment enligt GDPR Artikel 35. Se [dpia.md](dpia.md). |
-| **EAN (European Article Number)** | Streckkodsstandard för konsumentvaror. Matdata använder EAN-13 som primär identifierare. |
-| **EAN viktvarukod** | EAN-koder med prefix 20–29 där delar av koden representerar vikt eller pris. Måste maskeras för att inte bryta prishistoriken. |
-| **ePrivacy** | EU-direktiv som reglerar elektronisk kommunikation, inklusive cookies. Kompletterar GDPR. |
+| **Apache PDFBox** | Java library for reading and extracting text from PDF files. Used in `parser-service`. |
+| **C4 model** | Notation by Simon Brown for describing software architecture at four levels: Context, Container, Component, Code. |
+| **Canary test** | Recurring test against a known reference (e.g. a stored PDF) that raises an alarm if the result changes unintentionally. |
+| **Cloud Run** | GCP service for running containers serverless with per-request billing. |
+| **Cloud Storage (GCS)** | GCP object storage for files. Used in Matdata for temporary PDF storage. |
+| **Cookie banner** | Modal for cookie consent. Matdata aims to avoid the need entirely (see [gdpr.md](gdpr.md)). |
+| **Core Service** | Spring Boot application that powers the web interface, authentication and APIs. |
+| **Crowdsourcing** | In Matdata: aggregation of anonymised prices from all consenting users. |
+| **DLQ (Dead Letter Queue)** | Pub/Sub topic where messages are moved after a configured number of failed delivery attempts. |
+| **DPIA** | Data Protection Impact Assessment per GDPR Article 35. See [dpia.md](dpia.md). |
+| **EAN (European Article Number)** | Barcode standard for consumer goods. Matdata uses EAN-13 as the primary identifier. |
+| **EAN weight item code** | EAN codes with prefix 20–29 where parts of the code represent weight or price. Must be masked so that the price history is not broken. |
+| **ePrivacy** | EU directive that regulates electronic communication, including cookies. Complements GDPR. |
 
 ## F–L <a name="fL"></a>
 
-| Term | Förklaring |
+| Term | Explanation |
 | --- | --- |
-| **FAB (Floating Action Button)** | Framträdande, ofta cirkulär knapp för primär åtgärd. I Matdata: ladda upp kvitto. |
-| **Fas (Fas 1–5)** | Utvecklingsfaser i [project-plan_requirements.md](project-plan_requirements.md). |
-| **Flyway** | Verktyg för versionshantering av databasschema. Migreringar körs vid uppstart. |
-| **Förstudie** | Detta projektdokument-set som beskriver vad som ska byggas innan implementation påbörjas. |
-| **GCP (Google Cloud Platform)** | Molnplattform som hostar all infrastruktur i Matdata 2.0. |
-| **GDPR** | EU-förordning för dataskydd (Regulation (EU) 2016/679). Se [gdpr.md](gdpr.md). |
-| **HTMX** | JavaScript-bibliotek för att skicka AJAX-anrop och uppdatera DOM utan eget JavaScript-ramverk. |
-| **IaC (Infrastructure as Code)** | Praktiken att beskriva infrastruktur i kod. Matdata använder Terraform. |
-| **Idempotens** | Egenskapen att samma operation kan utföras flera gånger med samma resultat. Viktigt för Pub/Sub-meddelanden. |
-| **JDBC** | Java Database Connectivity – Javas standard för databasåtkomst. |
-| **Kitchen Sink** | UI-komponentkatalogen på `/dev/components`. Visar alla återanvändbara Thymeleaf-fragment. |
-| **Kivra** | Svensk digital brevlåda. Levererar bland annat ICA:s digitala kvitton som PDF. |
-| **Krympflation (eng. *shrinkflation*)** | Fenomenet att förpackningar minskar i innehåll medan priset behålls. Matdata varnar för detta. |
+| **FAB (Floating Action Button)** | Prominent, often circular, button for the primary action. In Matdata: upload receipt. |
+| **Phase (Phases 1–5)** | Development phases in [project-plan_requirements.md](project-plan_requirements.md). |
+| **Flyway** | Tool for version control of the database schema. Migrations run at start-up. |
+| **Pre-study** | This set of project documents that describes what is to be built before implementation begins. |
+| **GCP (Google Cloud Platform)** | Cloud platform that hosts all infrastructure in Matdata 2.0. |
+| **GDPR** | EU data protection regulation (Regulation (EU) 2016/679). See [gdpr.md](gdpr.md). |
+| **HTMX** | JavaScript library for issuing AJAX calls and updating the DOM without a bespoke JavaScript framework. |
+| **IaC (Infrastructure as Code)** | The practice of describing infrastructure as code. Matdata uses Terraform. |
+| **Idempotency** | The property that the same operation can be executed multiple times with the same result. Important for Pub/Sub messages. |
+| **JDBC** | Java Database Connectivity – Java's standard for database access. |
+| **Kitchen Sink** | The UI component catalogue at `/dev/components`. Shows all reusable Thymeleaf fragments. |
+| **Kivra** | Swedish digital mailbox. Delivers ICA's digital receipts as PDF, among other things. |
+| **Shrinkflation** | The phenomenon where packages shrink in content while the price is kept the same. Matdata warns about this. |
 
 ## M–S <a name="mS"></a>
 
-| Term | Förklaring |
+| Term | Explanation |
 | --- | --- |
-| **Matdata 2.0** | Projektnamnet. "2.0" anger att en första version finns, men nya versionen byggs från grunden. |
-| **MCP (Model Context Protocol)** | Protokoll för att ansluta AI-agenter till externa verktyg som designsystem. |
-| **Mermaid** | Textbaserad notation för diagram som renderas av GitHub. Används i arkitekturdokumentet. |
-| **Moms-kollen** | Tematisk analysvy som visar om butiker fört vidare momssänkningen på livsmedel. Krav K15. |
-| **Monorepo** | Repository som innehåller flera tjänster (`core-service`, `parser-service`, `terraform`, osv.). |
-| **MoSCoW** | Prioriteringsmetod: Must / Should / Could / Won't have. Se [project-plan_requirements.md](project-plan_requirements.md). |
-| **MVP (Minimum Viable Product)** | Minsta version som levererar värde och kan testas med användare. |
-| **Neon** | Serverless PostgreSQL-leverantör med stöd för databas-branchning per Pull Request. |
-| **NFR (Non-Functional Requirement)** | Krav på systemets kvalitetsegenskaper. Se [non-functional-requirements.md](non-functional-requirements.md). |
-| **OAuth2** | Standard för delegerad autentisering. Matdata stödjer OAuth2 via Google. |
-| **OpenTelemetry (OTel)** | Standard för distribuerad spårning, loggar och mätvärden. Exporterar till GCP Cloud Trace/Logging. |
-| **Parser Service** | Spring Boot-worker som extraherar och normaliserar data ur uppladdade PDF-filer. |
-| **PDPB (Privacy by Design)** | Princip om att bygga in dataskydd från start (GDPR Artikel 25). |
-| **PLU (Price Look-Up code)** | Numerisk kod för obarcoderade varor, främst frukt och grönt. |
-| **PR-miljö** | Per-Pull-Request-deployment med egen Cloud Run-instans, Pub/Sub-topic och Neon-databasbranch. |
-| **Pub/Sub** | GCP:s meddelandekö-tjänst. Används mellan `core-service` och `parser-service`. |
-| **RACI** | Ansvarsmatris: Responsible, Accountable, Consulted, Informed. |
-| **Row-Level Security (RLS)** | PostgreSQL-funktion som filtrerar rader per användare på databasnivå. |
-| **RPO/RTO** | Recovery Point Objective (max accepterad dataförlust) / Recovery Time Objective (max accepterad nedtid). |
-| **SLA/SLO/SLI** | Service Level Agreement / Objective / Indicator. Definierar och mäter tjänstekvalitet. |
-| **Spring Boot** | Java-ramverk för snabb utveckling av webbapplikationer. Matdata använder version 4.x. |
-| **Spring Security** | Spring-modul för autentisering och auktorisering. |
+| **Matdata 2.0** | The project name. "2.0" indicates that a first version exists, but the new version is built from scratch. |
+| **MCP (Model Context Protocol)** | Protocol for connecting AI agents to external tools such as design systems. |
+| **Mermaid** | Text-based notation for diagrams that is rendered by GitHub. Used in the architecture document. |
+| **Moms-kollen** | Thematic analysis view that shows whether stores have passed on the VAT reduction on food. Requirement K15. (Swedish "moms" = VAT.) |
+| **Monorepo** | Repository that contains multiple services (`core-service`, `parser-service`, `terraform`, etc.). |
+| **MoSCoW** | Prioritisation method: Must / Should / Could / Won't have. See [project-plan_requirements.md](project-plan_requirements.md). |
+| **MVP (Minimum Viable Product)** | The smallest version that delivers value and can be tested with users. |
+| **Neon** | Serverless PostgreSQL provider with support for database branching per Pull Request. |
+| **NFR (Non-Functional Requirement)** | Requirement on the system's quality attributes. See [non-functional-requirements.md](non-functional-requirements.md). |
+| **OAuth2** | Standard for delegated authentication. Matdata supports OAuth2 via Google. |
+| **OpenTelemetry (OTel)** | Standard for distributed tracing, logs and metrics. Exports to GCP Cloud Trace/Logging. |
+| **Parser Service** | Spring Boot worker that extracts and normalises data from uploaded PDF files. |
+| **PbD (Privacy by Design)** | Principle of building in data protection from the start (GDPR Article 25). |
+| **PLU (Price Look-Up code)** | Numeric code for non-barcoded items, mainly fruit and vegetables. |
+| **PR environment** | Per-Pull-Request deployment with its own Cloud Run instance, Pub/Sub topic and Neon database branch. |
+| **Pub/Sub** | GCP's message queue service. Used between `core-service` and `parser-service`. |
+| **RACI** | Responsibility matrix: Responsible, Accountable, Consulted, Informed. |
+| **Row-Level Security (RLS)** | PostgreSQL feature that filters rows per user at the database level. |
+| **RPO/RTO** | Recovery Point Objective (max acceptable data loss) / Recovery Time Objective (max acceptable downtime). |
+| **SLA/SLO/SLI** | Service Level Agreement / Objective / Indicator. Defines and measures service quality. |
+| **Spring Boot** | Java framework for rapid web application development. Matdata uses version 4.x. |
+| **Spring Security** | Spring module for authentication and authorisation. |
 
-## T–Ö <a name="tO"></a>
+## T–Z <a name="tZ"></a>
 
-| Term | Förklaring |
+| Term | Explanation |
 | --- | --- |
-| **Tailwind CSS** | Utility-first CSS-ramverk. Används för all styling i Matdata. |
-| **Terraform** | IaC-verktyg från HashiCorp. Beskriver GCP- och Neon-resurser deklarativt. |
-| **Testcontainers** | Java-bibliotek som startar Docker-containrar för integrationstester (t.ex. PostgreSQL). |
-| **Thymeleaf** | Server-side templating-motor för Spring Boot. Används istället för React/Vue. |
-| **Trace ID** | Unik identifierare som följer en begäran genom alla tjänster. Genereras av OpenTelemetry. |
-| **VAT-rate (Momssats)** | Mervärdesskattesats. I Sverige 12 % på livsmedel (tillfälligt 6 % under momssänkningen). |
-| **Workload Identity Federation** | Mekanism för att låta GitHub Actions få GCP-access utan långlivade service account-nycklar. |
-| **XSRF-TOKEN** | Cookie som används för att skydda mot Cross-Site Request Forgery i Spring Security. |
-| **Återhämtningstid (RTO)** | Se RPO/RTO ovan. |
-| **Övergångsspår (Trace)** | Se Trace ID. |
+| **Tailwind CSS** | Utility-first CSS framework. Used for all styling in Matdata. |
+| **Terraform** | IaC tool from HashiCorp. Describes GCP and Neon resources declaratively. |
+| **Testcontainers** | Java library that starts Docker containers for integration tests (e.g. PostgreSQL). |
+| **Thymeleaf** | Server-side templating engine for Spring Boot. Used instead of React/Vue. |
+| **Trace ID** | Unique identifier that follows a request through all services. Generated by OpenTelemetry. |
+| **VAT rate** | Value-Added Tax rate. In Sweden 12 % on food (temporarily 6 % during the VAT reduction). |
+| **Workload Identity Federation** | Mechanism that lets GitHub Actions obtain GCP access without long-lived service account keys. |
+| **XSRF-TOKEN** | Cookie used to protect against Cross-Site Request Forgery in Spring Security. |

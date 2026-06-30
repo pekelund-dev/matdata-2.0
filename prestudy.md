@@ -1,133 +1,133 @@
-# Förstudie: Matdata 2.0
+# Pre-study: Matdata 2.0
 
-**Smarta inköp, prishistorik och global statistik via digitala kvitton**
+**Smart shopping, price history and global statistics powered by digital receipts**
 
 | Metadata | |
 | --- | --- |
 | Version | 1.0 |
-| Senast uppdaterad | 2026-06-29 |
-| Status | Förstudie klar för granskning |
-| Plats i dokumentationen | Övergripande visionsdokument. Början för nya läsare. |
+| Last updated | 2026-06-29 |
+| Status | Pre-study ready for review |
+| Place in documentation | Overall vision document. Start here as a new reader. |
 
-> Detta är det övergripande förstudiedokumentet. För övriga dokument, se [README.md](README.md).
+> This is the overall pre-study document. For other documents, see [README.md](README.md).
 
-## Innehåll
-- [1. Inledning](#inledning)
-- [2. Målgrupp och personas](#malgrupp)
-- [3. Koncept och kärnfunktionalitet (MVP)](#koncept)
-- [4. Teknisk lösning och arkitektur](#teknisk)
-- [5. Konkurrensanalys](#konkurrens)
-- [6. Risker och utmaningar](#risker)
-- [7. Framgångskriterier och nyckeltal](#framgang)
-- [8. Avgränsningar och beroenden](#avgransningar)
-- [9. Nästa steg](#nasta)
+## Contents
+- [1. Introduction](#introduction)
+- [2. Target audience and personas](#target-audience)
+- [3. Concept and core functionality (MVP)](#concept)
+- [4. Technical solution and architecture](#technical)
+- [5. Competitive analysis](#competition)
+- [6. Risks and challenges](#risks)
+- [7. Success criteria and key metrics](#success)
+- [8. Scope and dependencies](#scope)
+- [9. Next steps](#next-steps)
 
-## 1. Inledning <a name="inledning"></a>
+## 1. Introduction <a name="introduction"></a>
 
-### 1.1 Bakgrund
-I takt med ökade levnadsomkostnader och fluktuerande matpriser har konsumenters behov av att ha kontroll över sina dagligvaruinköp ökat kraftigt. Matdata 2.0 föds ur viljan att ta kontroll över dessa kostnader genom att samla in och analysera kvittoinformation.
+### 1.1 Background
+As living costs rise and food prices fluctuate, consumers have a growing need to take control of their everyday grocery purchases. Matdata 2.0 is born out of the desire to gain control of these costs by collecting and analysing receipt data.
 
-### 1.2 Syfte
-Projektet har ett dubbelt syfte:
-1. **Produktmässigt:** Att bygga en plattform där användare kan ladda upp digitala kvitton för att automatiskt extrahera prisdata, spåra utgifter över tid och (med aktivt samtycke) bidra till en global, helt anonymiserad prisstatistik för att motverka "krympflation" och dolda prishöjningar.
-2. **Kompetensutveckling:** Att fungera som ett verkligt projekt för att djupdyka i och tillämpa modernaste möjliga teknologier: Java 26, Spring Boot 4, händelsestyrd arkitektur (GCP Pub/Sub), OpenTelemetry och Terraform.
+### 1.2 Purpose
+The project has a dual purpose:
+1. **Product-wise:** Build a platform where users can upload digital receipts to automatically extract price data, track expenses over time and (with active consent) contribute to a global, fully anonymised price statistic in order to counteract "shrinkflation" and hidden price hikes.
+2. **Skills development:** Serve as a real project for going deep into and applying the most modern technologies possible: Java 26, Spring Boot 4, event-driven architecture (GCP Pub/Sub), OpenTelemetry and Terraform.
 
-### 1.3 Mål
-Att definiera kärnfunktionalitet, en tydlig och kostnadseffektiv teknisk arkitektur med "Privacy by Design" i grunden, samt en plan för en MVP (Minimum Viable Product). Den fullständiga arkitekturen beskrivs i [architecture.md](architecture.md) och kraven i [project-plan_requirements.md](project-plan_requirements.md).
+### 1.3 Goal
+Define core functionality, a clear and cost-effective technical architecture with "Privacy by Design" at its core, and a plan for an MVP (Minimum Viable Product). The full architecture is described in [architecture.md](architecture.md) and the requirements in [project-plan_requirements.md](project-plan_requirements.md).
 
-## 2. Målgrupp och personas <a name="malgrupp"></a>
+## 2. Target audience and personas <a name="target-audience"></a>
 
-* **Prismedvetna konsumenter och dataentusiaster:** Individer som gillar att budgetera och visualisera sin ekonomi ner på radnivå.
-* **Samhällsmedvetna konsumenter:** Personer som vill bidra till "Moms-kollen" och öppen prisstatistik.
-* **Utvecklaren (primär användare initialt):** Byggd för att lösa ett eget problem och samtidigt fungera som en robust, banbrytande referensarkitektur för framtida projekt.
+* **Price-aware consumers and data enthusiasts:** Individuals who like to budget and visualise their finances at the line-item level.
+* **Socially conscious consumers:** People who want to contribute to "Moms-kollen" and open price statistics.
+* **The developer (primary user initially):** Built to solve a personal problem while also serving as a robust, pioneering reference architecture for future projects.
 
-Detaljerade personas (Anna, Markus, Sofia) finns i [ux-ui_vision.md](ux-ui_vision.md) avsnitt 1.5.
+Detailed personas (Anna, Markus, Sofia) are found in [ux-ui_vision.md](ux-ui_vision.md) section 1.5.
 
-## 3. Koncept och kärnfunktionalitet (MVP) <a name="koncept"></a>
+## 3. Concept and core functionality (MVP) <a name="concept"></a>
 
-För att snabbt och effektivt kunna testa hypotesen avgränsas MVP:n enligt MoSCoW-metoden i [project-plan_requirements.md](project-plan_requirements.md):
+To quickly and effectively test the hypothesis, the MVP is scoped using the MoSCoW method in [project-plan_requirements.md](project-plan_requirements.md):
 
-1. **Inmatning (PDF-fokus):** I fas 1 hanteras endast digitala PDF-kvitton från ICA via Kivra. Detta ger exakt data och eliminerar felkällor från traditionell OCR.
-2. **Asynkron dataextraktion:** Användaren får direkt feedback i gränssnittet (via HTMX-polling) medan en bakgrundsprocess extraherar butik, datum, artikelnummer (inklusive logik för att maskera viktvaror), namn och pris.
-3. **Insikter och UI:** Sökfunktion, "Moms-kollen" och varningar för krympflation. En "cookie-fri" upplevelse utan störande banners.
-4. **Anonymisering (crowdsourcing):** Systemet sparar en kopia av prisdatan helt frånkopplad från användaren och tidpunkten, redo för framtida globala prisjämförelser.
+1. **Input (PDF focus):** Phase 1 handles only digital PDF receipts from ICA via Kivra. This provides precise data and eliminates the error sources of traditional OCR.
+2. **Asynchronous data extraction:** The user gets immediate feedback in the interface (via HTMX polling) while a background process extracts store, date, article number (including logic for masking weight items), name and price.
+3. **Insights and UI:** Search function, "Moms-kollen" and shrinkflation warnings. A "cookie-free" experience without intrusive banners.
+4. **Anonymisation (crowdsourcing):** The system stores a copy of the price data completely detached from the user and timestamp, ready for future global price comparisons.
 
-## 4. Teknisk lösning och arkitektur <a name="teknisk"></a>
+## 4. Technical solution and architecture <a name="technical"></a>
 
-Projektet följer en **händelsestyrd, distribuerad arkitektur** anpassad för Google Cloud Platform (GCP). Fullständig arkitekturbeskrivning, diagram och datamodell finns i [architecture.md](architecture.md). Icke-funktionella krav (prestanda, säkerhet, accessibility) finns i [non-functional-requirements.md](non-functional-requirements.md).
+The project follows an **event-driven, distributed architecture** tailored for Google Cloud Platform (GCP). A full architecture description, diagrams and data model are available in [architecture.md](architecture.md). Non-functional requirements (performance, security, accessibility) are found in [non-functional-requirements.md](non-functional-requirements.md).
 
-### 4.1 Backend (två tjänster)
-* **Språk och ramverk:** Java 26 och Spring Boot 4.x.
-* **Core Service:** Hanterar inloggning, databasanrop och det HTMX-drivna webbgränssnittet (Thymeleaf, Tailwind CSS).
-* **Parser Service:** En separat worker-tjänst för tunga operationer (Apache PDFBox).
-* **Meddelandekö:** Google Cloud Pub/Sub sköter den asynkrona kommunikationen mellan Core och Parser.
+### 4.1 Back end (two services)
+* **Language and framework:** Java 26 and Spring Boot 4.x.
+* **Core Service:** Handles sign-in, database calls and the HTMX-powered web interface (Thymeleaf, Tailwind CSS).
+* **Parser Service:** A separate worker service for heavy operations (Apache PDFBox).
+* **Message queue:** Google Cloud Pub/Sub handles the asynchronous communication between Core and Parser.
 
-### 4.2 Databas och infrastruktur (IaC)
-* **Databas:** Neon (serverless PostgreSQL) som skalar till noll och möjliggör databas-branchning för varje Pull Request (PR-miljöer).
-* **Hostning:** Google Cloud Run (serverless).
-* **Filsystem:** Google Cloud Storage (GCS) för temporär PDF-lagring med strikta sekretessregler.
-* **Infrastruktur som kod:** Hela miljön sätts upp och hanteras deklarativt via **Terraform**.
+### 4.2 Database and infrastructure (IaC)
+* **Database:** Neon (serverless PostgreSQL) which scales to zero and enables database branching for every Pull Request (PR environments).
+* **Hosting:** Google Cloud Run (serverless).
+* **File system:** Google Cloud Storage (GCS) for temporary PDF storage with strict privacy rules.
+* **Infrastructure as code:** The entire environment is provisioned and managed declaratively via **Terraform**.
 
-### 4.3 Observabilitet och CI/CD
-* **OpenTelemetry (OTel):** Distribuerad spårning över båda mikrotjänsterna, loggar och metrics exporteras direkt till GCP (Cloud Trace/Logging) — eliminerar behovet av Google Analytics på klientsidan.
-* **CI/CD:** GitHub Actions för automatisk testning, byggnation av Docker-images, provisionering av test-databaser och driftsättning via Workload Identity Federation.
+### 4.3 Observability and CI/CD
+* **OpenTelemetry (OTel):** Distributed tracing across both microservices; logs and metrics are exported directly to GCP (Cloud Trace/Logging) — eliminating the need for client-side Google Analytics.
+* **CI/CD:** GitHub Actions for automated testing, building of Docker images, provisioning of test databases and deployment via Workload Identity Federation.
 
-## 5. Konkurrensanalys <a name="konkurrens"></a>
+## 5. Competitive analysis <a name="competition"></a>
 
-* **Matpriskollen:** Starka på erbjudanden, men sämre på att spåra historiska individuella inköp.
-* **Butikernas egna appar (ICA, Coop):** Låsta till sina egna system och visar ogärna prishistorik som pekar på prisökningar.
-* **Ekonomiappar (Tink, Zuper):** Fångar totalsumman via banken, men saknar kvittots radnivå-data.
-* **Matdata 2.0:s unika fördel:** Radnivå-analys, krympflations-varningar och total transparens med användarens data (enkel export, tydlig radering).
+* **Matpriskollen:** Strong on offers, but weaker at tracking historical individual purchases.
+* **Stores' own apps (ICA, Coop):** Locked to their own systems and reluctant to show price history that highlights price increases.
+* **Finance apps (Tink, Zuper):** Capture the total amount from the bank, but lack the line-item data of the receipt.
+* **Matdata 2.0's unique edge:** Line-item analysis, shrinkflation warnings and full transparency over the user's data (easy export, clear deletion).
 
-## 6. Risker och utmaningar <a name="risker"></a>
+## 6. Risks and challenges <a name="risks"></a>
 
-De största riskerna sammanfattas här. Fullständigt riskregister med sannolikhet, konsekvens, mitigering och ägare finns i [risk-register.md](risk-register.md).
+The biggest risks are summarised here. A full risk register with likelihood, impact, mitigation and owner is available in [risk-register.md](risk-register.md).
 
-* **T1 — Externa format:** ICA/Kivra kan ändra layouten på sina PDF-kvitton, vilket direkt skulle få parsningen att gå sönder. Mitigeras med versionerad parser och canary-tester.
-* **T2 — Komplexitet i EAN-hantering:** Streckkoder för viktvaror inkorporerar pris/vikt, vilket kräver noggrann logik i parsningen för att inte bryta prishistoriken. Hanteras via enhetstester i Fas 2.
-* **S1 — Sekretess (GDPR):** Hantering av inköpsdata är känsligt. "Rätten att bli glömd" och separation mellan personlig historik och global statistik måste vara stensäker från dag ett (Privacy by Design). Se [gdpr.md](gdpr.md) och [dpia.md](dpia.md).
-* **V2 — Begränsad butikstäckning:** Endast ICA-stöd vid lansering. Plugin-arkitektur (krav K20) ska minska beroendet på sikt.
-* **O1 — Single developer:** Risk för flaskhalsar och kunskapssilos. Mitigeras genom denna förstudie och ADR-light i [open-decisions.md](open-decisions.md).
+* **T1 — External formats:** ICA/Kivra may change the layout of their PDF receipts, which would immediately break parsing. Mitigated with a versioned parser and canary tests.
+* **T2 — Complexity in EAN handling:** Barcodes for weight items embed price/weight, which requires careful logic in the parser to avoid breaking the price history. Handled via unit tests in Phase 2.
+* **S1 — Privacy (GDPR):** Handling purchase data is sensitive. "The right to be forgotten" and the separation between personal history and global statistics must be rock-solid from day one (Privacy by Design). See [gdpr.md](gdpr.md) and [dpia.md](dpia.md).
+* **V2 — Limited store coverage:** Only ICA is supported at launch. A plug-in architecture (requirement K20) is intended to reduce this dependency over time.
+* **O1 — Single developer:** Risk of bottlenecks and knowledge silos. Mitigated by this pre-study and the ADR-light log in [open-decisions.md](open-decisions.md).
 
-## 7. Framgångskriterier och nyckeltal <a name="framgang"></a>
+## 7. Success criteria and key metrics <a name="success"></a>
 
-MVP-fasen bedöms som lyckad när följande mätbara mål uppnåtts. Kriterierna ska gå att bekräfta med data, inte med subjektiva omdömen.
+The MVP phase is considered successful when the following measurable goals have been met. The criteria must be verifiable with data, not with subjective judgements.
 
-### 7.1 Produktmässiga framgångskriterier
-* Minst **50 unika användare** har skapat ett konto inom 3 månader efter publik lansering.
-* Minst **20 av dessa användare** har laddat upp 5 kvitton eller fler.
-* Genomsnittlig parsing-träffsäkerhet på ICA-kvitton är **≥ 95 %** mätt mot manuell verifiering av referenskvitton.
-* Tid från PDF-uppladdning till färdig parsing är **< 30 sekunder (p95)**. Se [non-functional-requirements.md](non-functional-requirements.md) NFR-P2.
+### 7.1 Product success criteria
+* At least **50 unique users** have created an account within 3 months of the public launch.
+* At least **20 of those users** have uploaded 5 receipts or more.
+* Average parsing accuracy on ICA receipts is **≥ 95 %** measured against manual verification of reference receipts.
+* Time from PDF upload to completed parsing is **< 30 seconds (p95)**. See [non-functional-requirements.md](non-functional-requirements.md) NFR-P2.
 
-### 7.2 Tekniska framgångskriterier
-* **CI/CD-pipeline fungerar** för båda tjänsterna med PR-miljöer (krav K6).
-* **OpenTelemetry-traces täcker** hela uppladdningsflödet ände-till-ände (krav K10, NFR-O1).
-* **Driftsavbrott** för `core-service` under MVP-perioden är **mindre än 1 %** mätt över 3 månader (NFR-A1, mer generös tröskel än publik tjänst).
-* **Inga GDPR-incidenter** kopplade till Matdata 2.0.
+### 7.2 Technical success criteria
+* **CI/CD pipeline works** for both services with PR environments (requirement K6).
+* **OpenTelemetry traces cover** the entire upload flow end-to-end (requirement K10, NFR-O1).
+* **Downtime** for `core-service` during the MVP period is **less than 1 %** measured over 3 months (NFR-A1, a more lenient threshold than for a public service).
+* **No GDPR incidents** linked to Matdata 2.0.
 
-### 7.3 Lärandemål
-* Praktisk erfarenhet av Java 26 (Virtual Threads, Pattern Matching) och Spring Boot 4.x.
-* Praktisk erfarenhet av distribuerad spårning med OpenTelemetry mot GCP.
-* Praktisk erfarenhet av Terraform mot GCP och Neon.
-* Praktisk erfarenhet av Neons databas-branchning per PR.
-* Dokumenterad referensarkitektur som kan återanvändas i framtida projekt.
+### 7.3 Learning goals
+* Practical experience with Java 26 (Virtual Threads, Pattern Matching) and Spring Boot 4.x.
+* Practical experience with distributed tracing using OpenTelemetry against GCP.
+* Practical experience with Terraform against GCP and Neon.
+* Practical experience with Neon's database branching per PR.
+* A documented reference architecture that can be reused in future projects.
 
-## 8. Avgränsningar och beroenden <a name="avgransningar"></a>
+## 8. Scope and dependencies <a name="scope"></a>
 
-* **Geografi:** MVP riktas mot svenska användare och svenska butiker. Internationalisering hanteras enligt [non-functional-requirements.md](non-functional-requirements.md) avsnitt 9.
-* **Plattform:** Endast webbapplikation. Native iOS/Android är "Won't have" (krav K19).
-* **Inmatning:** Endast digitala PDF-kvitton från ICA via Kivra i MVP. OCR (K17) och övriga kedjor (K20) ligger i Could-have.
-* **Beroenden mot tredje part:** Kivra (PDF-leverans), Google (GCP), Neon (databas). Risker dokumenterade i [risk-register.md](risk-register.md) avsnitt "Leverantörs- och beroenderisker".
-* **Budget:** MVP ska kunna drivas inom ramen för leverantörernas gratisplaner. Detaljerad uppskattning i [cost-estimate.md](cost-estimate.md).
+* **Geography:** The MVP targets Swedish users and Swedish stores. Internationalisation is handled according to [non-functional-requirements.md](non-functional-requirements.md) section 9.
+* **Platform:** Web application only. Native iOS/Android is "Won't have" (requirement K19).
+* **Input:** Only digital PDF receipts from ICA via Kivra in the MVP. OCR (K17) and other chains (K20) are in the Could-have bucket.
+* **Third-party dependencies:** Kivra (PDF delivery), Google (GCP), Neon (database). Risks documented in [risk-register.md](risk-register.md) section "Supplier and dependency risks".
+* **Budget:** The MVP must be runnable within the suppliers' free tiers. Detailed estimate in [cost-estimate.md](cost-estimate.md).
 
-## 9. Nästa steg <a name="nasta"></a>
+## 9. Next steps <a name="next-steps"></a>
 
-Följ den upprättade **Projektplanen och Roadmapen** i [project-plan_requirements.md](project-plan_requirements.md), med start i *Fas 1: Grunden (Infrastruktur & Miljö)* där repo sätts upp och Terraform konfigureras.
+Follow the established **Project plan and Roadmap** in [project-plan_requirements.md](project-plan_requirements.md), starting with *Phase 1: Foundation (Infrastructure & Environment)* where the repo is set up and Terraform is configured.
 
-Innan Fas 1 startar bör följande granskningar och bekräftelser ske:
+Before Phase 1 starts, the following reviews and confirmations should take place:
 
-1. **Granskning av förstudien** av samtliga intressenter.
-2. **Acceptans av riskregister** ([risk-register.md](risk-register.md)) inklusive utpekade ägare.
-3. **Bekräftelse av kostnadsestimat** ([cost-estimate.md](cost-estimate.md)) och budget.
-4. **Säkerställ att samtliga öppna ADR** ([open-decisions.md](open-decisions.md)) som måste beslutas innan Fas 4 är schemalagda.
-5. **Bekräftelse av GDPR-strategi och DPIA** ([gdpr.md](gdpr.md), [dpia.md](dpia.md)).
+1. **Review of the pre-study** by all stakeholders.
+2. **Acceptance of the risk register** ([risk-register.md](risk-register.md)) including named owners.
+3. **Confirmation of the cost estimate** ([cost-estimate.md](cost-estimate.md)) and budget.
+4. **Make sure that all open ADRs** ([open-decisions.md](open-decisions.md)) that must be decided before Phase 4 are scheduled.
+5. **Confirmation of the GDPR strategy and DPIA** ([gdpr.md](gdpr.md), [dpia.md](dpia.md)).

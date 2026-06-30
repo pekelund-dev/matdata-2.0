@@ -1,155 +1,155 @@
-# Icke-funktionella krav (NFR): Matdata 2.0
+# Non-functional requirements (NFR): Matdata 2.0
 
 **Version:** 1.0
-**Senast uppdaterad:** 2026-06-29
-**Status:** Förstudie klar för granskning
+**Last updated:** 2026-06-29
+**Status:** Pre-study ready for review
 
-Detta dokument samlar de icke-funktionella krav som inte ryms i [project-plan_requirements.md](project-plan_requirements.md). NFR:erna är mätbara, kopplade till SLO:er där det är meningsfullt, och prioriterade enligt MoSCoW.
+This document collects the non-functional requirements that do not fit in [project-plan_requirements.md](project-plan_requirements.md). The NFRs are measurable, tied to SLOs where meaningful, and prioritised according to MoSCoW.
 
-## Innehåll
-- [1. Prestanda](#prestanda)
-- [2. Tillgänglighet och tillförlitlighet](#tillganglighet)
-- [3. Skalbarhet och kapacitet](#skalbarhet)
-- [4. Säkerhet](#sakerhet)
-- [5. Dataskydd och retention](#dataskydd)
-- [6. Observabilitet och driftnära krav](#observabilitet)
-- [7. Backup och katastrofåterställning](#backup)
-- [8. Tillgänglighet (accessibility, WCAG)](#accessibility)
-- [9. Internationalisering och språk](#i18n)
-- [10. Webbläsar- och enhetsstöd](#browser)
-- [11. Underhållbarhet](#underhall)
+## Contents
+- [1. Performance](#performance)
+- [2. Availability and reliability](#availability)
+- [3. Scalability and capacity](#scalability)
+- [4. Security](#security)
+- [5. Data protection and retention](#data-protection)
+- [6. Observability and operational requirements](#observability)
+- [7. Backup and disaster recovery](#backup)
+- [8. Accessibility (WCAG)](#accessibility)
+- [9. Internationalisation and language](#i18n)
+- [10. Browser and device support](#browser)
+- [11. Maintainability](#maintainability)
 
-## 1. Prestanda <a name="prestanda"></a>
+## 1. Performance <a name="performance"></a>
 
-| ID | Krav | Mål (MVP) | Mätning | Prioritet |
+| ID | Requirement | Target (MVP) | Measurement | Priority |
 | --- | --- | --- | --- | --- |
-| NFR-P1 | Tid till första byte (TTFB) på inloggad dashboard | < 500 ms (p95) | Cloud Run metric `request_latencies` | M |
-| NFR-P2 | Tid från PDF-uppladdning till färdig parsing | < 30 s (p95) för kvitto ≤ 5 MB | Egen metric: `receipt_processing_seconds` | M |
-| NFR-P3 | HTMX-polling-svar för statuskontroll | < 100 ms (p95) | Cloud Run metric per endpoint | S |
-| NFR-P4 | Sökresultat (autocomplete) | < 200 ms (p95) | Egen metric | S |
-| NFR-P5 | Cold start för `core-service` | < 5 s | Cloud Run startup latency | S |
-| NFR-P6 | Cold start för `parser-service` | < 8 s (mer minne, större image) | Cloud Run startup latency | C |
+| NFR-P1 | Time to first byte (TTFB) on signed-in dashboard | < 500 ms (p95) | Cloud Run metric `request_latencies` | M |
+| NFR-P2 | Time from PDF upload to completed parsing | < 30 s (p95) for receipt ≤ 5 MB | Custom metric: `receipt_processing_seconds` | M |
+| NFR-P3 | HTMX polling response for status check | < 100 ms (p95) | Cloud Run metric per endpoint | S |
+| NFR-P4 | Search result (autocomplete) | < 200 ms (p95) | Custom metric | S |
+| NFR-P5 | Cold start for `core-service` | < 5 s | Cloud Run startup latency | S |
+| NFR-P6 | Cold start for `parser-service` | < 8 s (more memory, larger image) | Cloud Run startup latency | C |
 
-Måtten gäller MVP. Skala upp tröskeln eller fastställ snävare SLO:er innan officiell lansering.
+The targets apply to the MVP. Either raise the threshold or set tighter SLOs before the official launch.
 
-## 2. Tillgänglighet och tillförlitlighet <a name="tillganglighet"></a>
+## 2. Availability and reliability <a name="availability"></a>
 
-| ID | Krav | Mål (MVP) | Mätning | Prioritet |
+| ID | Requirement | Target (MVP) | Measurement | Priority |
 | --- | --- | --- | --- | --- |
-| NFR-A1 | Uppåtgångstid för `core-service` | 99 % per månad (≈ 7 h 18 min nedtid) | Cloud Monitoring uptime check | M |
-| NFR-A2 | Felgrad (HTTP 5xx) på `core-service` | < 1 % av requests | Cloud Monitoring `5xx_ratio` | M |
-| NFR-A3 | Asynkron processning lyckas | ≥ 95 % av kvitton går till COMPLETED utan manuell åtgärd | Egen metric: `parser_success_ratio` | M |
-| NFR-A4 | DLQ-flöde | DLQ-trafik > 0 utlöser larm inom 5 min | Cloud Monitoring alert | M |
+| NFR-A1 | Uptime for `core-service` | 99 % per month (≈ 7 h 18 min downtime) | Cloud Monitoring uptime check | M |
+| NFR-A2 | Error rate (HTTP 5xx) on `core-service` | < 1 % of requests | Cloud Monitoring `5xx_ratio` | M |
+| NFR-A3 | Asynchronous processing succeeds | ≥ 95 % of receipts go to COMPLETED without manual intervention | Custom metric: `parser_success_ratio` | M |
+| NFR-A4 | DLQ flow | DLQ traffic > 0 triggers an alert within 5 minutes | Cloud Monitoring alert | M |
 
-För MVP accepteras lägre uppåtgångstid än för en kommersiell tjänst. Innan publik lansering ska SLO:er omförhandlas.
+For the MVP a lower uptime than for a commercial service is accepted. Before the public launch, the SLOs must be renegotiated.
 
-## 3. Skalbarhet och kapacitet <a name="skalbarhet"></a>
+## 3. Scalability and capacity <a name="scalability"></a>
 
-**Kapacitetsantaganden för MVP (första 6 månader):**
-* Aktiva användare: 50–500.
-* Genomsnittlig kvittouppladdning per användare och månad: 10.
-* Toppbelastning: 5 samtidiga uppladdningar.
-* Datavolym efter 6 månader: 30 000 kvitton, ~500 MB i Cloud Storage, ~1 GB i PostgreSQL.
+**Capacity assumptions for the MVP (first 6 months):**
+* Active users: 50–500.
+* Average receipt uploads per user per month: 10.
+* Peak load: 5 simultaneous uploads.
+* Data volume after 6 months: 30,000 receipts, ~500 MB in Cloud Storage, ~1 GB in PostgreSQL.
 
-| ID | Krav | Mål | Prioritet |
+| ID | Requirement | Target | Priority |
 | --- | --- | --- | --- |
-| NFR-S1 | Horisontell skalning av `core-service` | Cloud Run min 0, max 5 instanser | M |
-| NFR-S2 | Horisontell skalning av `parser-service` | Cloud Run min 0, max 3 instanser | M |
-| NFR-S3 | Databasanslutningar | Connection pool ≤ 10 per instans, HikariCP | M |
-| NFR-S4 | Maximal PDF-storlek per uppladdning | 10 MB | M |
-| NFR-S5 | Maximalt antal kvitton per användarbatch | 20 | S |
+| NFR-S1 | Horizontal scaling of `core-service` | Cloud Run min 0, max 5 instances | M |
+| NFR-S2 | Horizontal scaling of `parser-service` | Cloud Run min 0, max 3 instances | M |
+| NFR-S3 | Database connections | Connection pool ≤ 10 per instance, HikariCP | M |
+| NFR-S4 | Maximum PDF size per upload | 10 MB | M |
+| NFR-S5 | Maximum number of receipts per user batch | 20 | S |
 
-## 4. Säkerhet <a name="sakerhet"></a>
+## 4. Security <a name="security"></a>
 
-| ID | Krav | Mätning/verifiering | Prioritet |
+| ID | Requirement | Measurement/verification | Priority |
 | --- | --- | --- | --- |
-| NFR-SEC1 | Endast HTTPS i alla miljöer | Cloud Run-konfiguration | M |
-| NFR-SEC2 | Strikt CSP-header på alla sidor | Manuell verifiering, automatiserat smoke-test | M |
-| NFR-SEC3 | CSRF-skydd för alla state-changing-endpoints | Spring Security default + integrationstest | M |
-| NFR-SEC4 | Lösenord lagras med BCrypt cost ≥ 12 | Kod-review | M |
-| NFR-SEC5 | Sessionsregenerering efter inloggning | Spring Securitys defaultbeteende, verifieras i test | M |
-| NFR-SEC6 | Beroendescanning i CI | Dependabot + `mvn dependency:tree`-rapport | M |
-| NFR-SEC7 | Statisk kodanalys (SAST) | GitHub CodeQL aktiverat | S |
-| NFR-SEC8 | Hemligheter i CI/CD hanteras via Workload Identity Federation | GitHub Actions-konfiguration | M |
-| NFR-SEC9 | Periodisk extern säkerhetsgranskning | Minst en oberoende granskning innan publik lansering | S |
-| NFR-SEC10 | Rate limiting på autentiseringsendpoints | Spring Security + ev. Cloud Armor | S |
+| NFR-SEC1 | HTTPS only in all environments | Cloud Run configuration | M |
+| NFR-SEC2 | Strict CSP header on all pages | Manual verification, automated smoke test | M |
+| NFR-SEC3 | CSRF protection for all state-changing endpoints | Spring Security default + integration test | M |
+| NFR-SEC4 | Passwords stored with BCrypt cost ≥ 12 | Code review | M |
+| NFR-SEC5 | Session regeneration after sign-in | Spring Security default behaviour, verified in test | M |
+| NFR-SEC6 | Dependency scanning in CI | Dependabot + `mvn dependency:tree` report | M |
+| NFR-SEC7 | Static code analysis (SAST) | GitHub CodeQL enabled | S |
+| NFR-SEC8 | Secrets in CI/CD managed via Workload Identity Federation | GitHub Actions configuration | M |
+| NFR-SEC9 | Periodic external security review | At least one independent review before public launch | S |
+| NFR-SEC10 | Rate limiting on authentication endpoints | Spring Security + optionally Cloud Armor | S |
 
-## 5. Dataskydd och retention <a name="dataskydd"></a>
+## 5. Data protection and retention <a name="data-protection"></a>
 
-Se [gdpr.md](gdpr.md) och [dpia.md](dpia.md) för fullständig analys. Detta avsnitt sammanfattar de tekniska kraven.
+See [gdpr.md](gdpr.md) and [dpia.md](dpia.md) for the full analysis. This section summarises the technical requirements.
 
-| ID | Datatyp | Retention | Lagringsplats | Anmärkning |
+| ID | Data type | Retention | Storage | Note |
 | --- | --- | --- | --- | --- |
-| NFR-D1 | Original-PDF | 30 dagar (default) eller tills användaren raderar/sparar | Cloud Storage | Cronjobb rensar (se [gdpr.md](gdpr.md) avsnitt 5) |
-| NFR-D2 | Kvittorader (personlig) | Tills användaren raderas eller raderar själv | Neon PostgreSQL | ON DELETE CASCADE |
-| NFR-D3 | Globala prispunkter (anonym) | Permanent | Neon PostgreSQL | Påverkas inte av användarradering |
-| NFR-D4 | Sessioner | 30 dagar inaktivitet | Neon PostgreSQL via Spring Session JDBC | Daglig rensning |
-| NFR-D5 | Strukturerade loggar | 30 dagar | GCP Cloud Logging | Lägre kostnad än längre retention |
-| NFR-D6 | Audit-loggar (autentisering, samtycke) | 1 år | GCP Cloud Logging (separat bucket) | Skydd mot manipulering |
-| NFR-D7 | Trace-data | 7 dagar | GCP Cloud Trace | Standard |
-| NFR-D8 | Backup av databas | Daglig snapshot, 14 dagar retention | Neon | Se avsnitt 7 |
+| NFR-D1 | Original PDF | 30 days (default) or until the user deletes/keeps | Cloud Storage | Cron job cleans up (see [gdpr.md](gdpr.md) section 5) |
+| NFR-D2 | Receipt items (personal) | Until the user is deleted or deletes themselves | Neon PostgreSQL | ON DELETE CASCADE |
+| NFR-D3 | Global price points (anonymous) | Permanent | Neon PostgreSQL | Not affected by user deletion |
+| NFR-D4 | Sessions | 30 days inactivity | Neon PostgreSQL via Spring Session JDBC | Daily clean-up |
+| NFR-D5 | Structured logs | 30 days | GCP Cloud Logging | Lower cost than longer retention |
+| NFR-D6 | Audit logs (authentication, consent) | 1 year | GCP Cloud Logging (separate bucket) | Tamper protection |
+| NFR-D7 | Trace data | 7 days | GCP Cloud Trace | Default |
+| NFR-D8 | Database backup | Daily snapshot, 14-day retention | Neon | See section 7 |
 
-## 6. Observabilitet och driftnära krav <a name="observabilitet"></a>
+## 6. Observability and operational requirements <a name="observability"></a>
 
-| ID | Krav | Implementation | Prioritet |
+| ID | Requirement | Implementation | Priority |
 | --- | --- | --- | --- |
-| NFR-O1 | Distribuerad spårning ände-till-ände | OpenTelemetry från `core-service` via Pub/Sub till `parser-service` | M |
-| NFR-O2 | Strukturerade loggar i JSON | Spring Boot + Logback JSON encoder, korrelerade med trace ID | M |
-| NFR-O3 | Standardiserade metrics | `http_requests_total`, `receipt_processing_seconds`, `parser_success_ratio`, m.fl. | M |
-| NFR-O4 | Larm vid SLO-brott | Cloud Monitoring policies | M |
-| NFR-O5 | PII filtreras ur loggar | Logback masker + kodgranskning | M |
-| NFR-O6 | Dashboards för viktigaste KPI:er | Cloud Monitoring dashboards | S |
+| NFR-O1 | End-to-end distributed tracing | OpenTelemetry from `core-service` via Pub/Sub to `parser-service` | M |
+| NFR-O2 | Structured logs in JSON | Spring Boot + Logback JSON encoder, correlated with trace ID | M |
+| NFR-O3 | Standardised metrics | `http_requests_total`, `receipt_processing_seconds`, `parser_success_ratio`, etc. | M |
+| NFR-O4 | Alerts on SLO breaches | Cloud Monitoring policies | M |
+| NFR-O5 | PII filtered out of logs | Logback masks + code review | M |
+| NFR-O6 | Dashboards for the most important KPIs | Cloud Monitoring dashboards | S |
 
-## 7. Backup och katastrofåterställning <a name="backup"></a>
+## 7. Backup and disaster recovery <a name="backup"></a>
 
-| ID | Krav | Mål | Prioritet |
+| ID | Requirement | Target | Priority |
 | --- | --- | --- | --- |
-| NFR-B1 | RPO (Recovery Point Objective) — databas | ≤ 24 h | M |
-| NFR-B2 | RTO (Recovery Time Objective) — databas | ≤ 4 h | M |
-| NFR-B3 | RPO — Cloud Storage (PDF) | Best effort. Användare uppmanas behålla original i Kivra | C |
-| NFR-B4 | Återhämtningstest | Minst en lyckad återhämtning från snapshot per kvartal | S |
-| NFR-B5 | IaC i Git | All infrastruktur återskapas från Terraform i ny GCP/Neon | M |
+| NFR-B1 | RPO (Recovery Point Objective) — database | ≤ 24 h | M |
+| NFR-B2 | RTO (Recovery Time Objective) — database | ≤ 4 h | M |
+| NFR-B3 | RPO — Cloud Storage (PDF) | Best effort. Users are asked to keep originals in Kivra | C |
+| NFR-B4 | Recovery test | At least one successful recovery from a snapshot per quarter | S |
+| NFR-B5 | IaC in Git | All infrastructure recreated from Terraform in new GCP/Neon | M |
 
-## 8. Tillgänglighet — accessibility (WCAG) <a name="accessibility"></a>
+## 8. Accessibility (WCAG) <a name="accessibility"></a>
 
-| ID | Krav | Mål | Prioritet |
+| ID | Requirement | Target | Priority |
 | --- | --- | --- | --- |
-| NFR-AC1 | WCAG 2.1 AA-konformans för publika sidor | Audit före publik lansering | M |
-| NFR-AC2 | Färgkontrast ≥ 4,5:1 för normaltext | Verifieras via designtokens och automatiska tester | M |
-| NFR-AC3 | Alla interaktiva element nås via tangentbord | Manuellt test + Playwright-test efter MVP | M |
-| NFR-AC4 | Semantisk HTML och korrekt landmark-struktur | Linter (axe-core eller motsv.) i CI | M |
-| NFR-AC5 | Skärmläsare kan navigera huvudflödet (login, ladda upp, se kvitto) | Manuellt test med NVDA eller VoiceOver | S |
-| NFR-AC6 | Animationer respekterar `prefers-reduced-motion` | CSS-implementation | S |
+| NFR-AC1 | WCAG 2.1 AA conformance for public pages | Audit before public launch | M |
+| NFR-AC2 | Colour contrast ≥ 4.5:1 for normal text | Verified via design tokens and automated tests | M |
+| NFR-AC3 | All interactive elements reachable via keyboard | Manual test + Playwright test after MVP | M |
+| NFR-AC4 | Semantic HTML and correct landmark structure | Linter (axe-core or equivalent) in CI | M |
+| NFR-AC5 | Screen reader can navigate the main flow (sign-in, upload, view receipt) | Manual test with NVDA or VoiceOver | S |
+| NFR-AC6 | Animations respect `prefers-reduced-motion` | CSS implementation | S |
 
-## 9. Internationalisering och språk <a name="i18n"></a>
+## 9. Internationalisation and language <a name="i18n"></a>
 
-| ID | Krav | Mål | Prioritet |
+| ID | Requirement | Target | Priority |
 | --- | --- | --- | --- |
-| NFR-I1 | All UI-text läses från meddelandefiler | Spring `MessageSource` + Thymeleaf `#{...}`-syntax | M |
-| NFR-I2 | MVP stödjer endast svenska (`sv-SE`) | Standardlokalisering | M |
-| NFR-I3 | Datum-, tids- och valutaformat respekterar lokal | Spring `Locale` + JSR-310 | M |
-| NFR-I4 | Engelska som andra språk | Aktiveras efter MVP | C |
-| NFR-I5 | Inga hårdkodade strängar i Thymeleaf eller Java | Linter-regel eller PR-granskning | S |
+| NFR-I1 | All UI text is read from message files | Spring `MessageSource` + Thymeleaf `#{...}` syntax | M |
+| NFR-I2 | MVP supports Swedish only (`sv-SE`) | Default localisation | M |
+| NFR-I3 | Date, time and currency format respect the locale | Spring `Locale` + JSR-310 | M |
+| NFR-I4 | English as a second language | Activated after MVP | C |
+| NFR-I5 | No hard-coded strings in Thymeleaf or Java | Linter rule or PR review | S |
 
-## 10. Webbläsar- och enhetsstöd <a name="browser"></a>
+## 10. Browser and device support <a name="browser"></a>
 
-| ID | Plattform | Versioner | Prioritet |
+| ID | Platform | Versions | Priority |
 | --- | --- | --- | --- |
-| NFR-BR1 | Chrome | Senaste 2 stora versioner | M |
-| NFR-BR2 | Safari (iOS och macOS) | Senaste 2 stora versioner | M |
-| NFR-BR3 | Edge | Senaste 2 stora versioner | M |
-| NFR-BR4 | Firefox | Senaste 2 stora versioner | S |
-| NFR-BR5 | Mobil (Android Chrome, iOS Safari) | Senaste 2 stora versioner | M |
-| NFR-BR6 | Skärmstorlek | 320 px och uppåt | M |
-| NFR-BR7 | Internet Explorer | Stöds inte | W |
+| NFR-BR1 | Chrome | Latest 2 major versions | M |
+| NFR-BR2 | Safari (iOS and macOS) | Latest 2 major versions | M |
+| NFR-BR3 | Edge | Latest 2 major versions | M |
+| NFR-BR4 | Firefox | Latest 2 major versions | S |
+| NFR-BR5 | Mobile (Android Chrome, iOS Safari) | Latest 2 major versions | M |
+| NFR-BR6 | Screen size | 320 px and up | M |
+| NFR-BR7 | Internet Explorer | Not supported | W |
 
-## 11. Underhållbarhet <a name="underhall"></a>
+## 11. Maintainability <a name="maintainability"></a>
 
-| ID | Krav | Mätning | Prioritet |
+| ID | Requirement | Measurement | Priority |
 | --- | --- | --- | --- |
-| NFR-M1 | Enhetstestens kodtäckning på affärskritisk kod | ≥ 80 % linjetäckning på Parser Service domänklasser | M |
-| NFR-M2 | Kodformatering enligt etablerad standard | Spotless eller Google Java Format i CI | M |
-| NFR-M3 | Statisk analys | SpotBugs + ErrorProne i CI | S |
-| NFR-M4 | Dokumentation av offentliga API:er | OpenAPI-spec (springdoc) | S |
-| NFR-M5 | Dokumentation av arkitekturbeslut | [open-decisions.md](open-decisions.md) | M |
-| NFR-M6 | Tydlig commit-historik | Conventional Commits | S |
+| NFR-M1 | Unit test code coverage on business-critical code | ≥ 80 % line coverage on Parser Service domain classes | M |
+| NFR-M2 | Code formatting per established standard | Spotless or Google Java Format in CI | M |
+| NFR-M3 | Static analysis | SpotBugs + ErrorProne in CI | S |
+| NFR-M4 | Documentation of public APIs | OpenAPI spec (springdoc) | S |
+| NFR-M5 | Documentation of architecture decisions | [open-decisions.md](open-decisions.md) | M |
+| NFR-M6 | Clear commit history | Conventional Commits | S |

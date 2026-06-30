@@ -1,78 +1,78 @@
-# Matdata 2.0 — Förstudie
+# Matdata 2.0 — Pre-study
 
-**Smarta inköp, prishistorik och global statistik via digitala kvitton.**
+**Smart shopping, price history and global statistics powered by digital receipts.**
 
-Detta repository innehåller förstudien för Matdata 2.0. Förstudien beskriver vad som ska byggas, varför, hur och under vilka förutsättningar. Den fungerar som styrande underlag för den efterföljande implementationsfasen.
+This repository contains the pre-study for Matdata 2.0. The pre-study describes what is to be built, why, how and under which conditions. It serves as the governing reference for the subsequent implementation phase.
 
-## Dokumentstatus
+## Document status
 
-| Status | Datum | Version |
+| Status | Date | Version |
 | --- | --- | --- |
-| Förstudie klar för granskning | 2026-06-29 | 1.0 |
+| Pre-study ready for review | 2026-06-29 | 1.0 |
 
-Alla dokument är skrivna på svenska. Tekniska termer, kodexempel och AI-prompter behåller engelska där det är etablerad praxis.
+All documents are written in English. Swedish-language terms (e.g. "Moms-kollen") are kept where they are part of the product vocabulary, and a glossary is provided.
 
-## Dokumentindex
+## Document index
 
-Dokumenten är organiserade i tre lager: vad vi bygger, hur vi bygger det och vad vi har bestämt under resans gång.
+The documents are organised into three layers: what we are building, how we are building it, and what we have decided along the way.
 
-### Lager 1 — Vision och scope (vad)
-| Dokument | Syfte |
+### Layer 1 — Vision and scope (what)
+| Document | Purpose |
 | --- | --- |
-| [prestudy.md](prestudy.md) | Övergripande förstudie: bakgrund, syfte, målgrupp, MVP-koncept och konkurrensanalys. |
-| [project-plan_requirements.md](project-plan_requirements.md) | Kravmatris (MoSCoW), utvecklingsfaser och teststrategi. |
-| [user-stories.md](user-stories.md) | Epics och user stories med Given/When/Then-acceptanskriterier härledda från kraven. |
-| [ux-ui_vision.md](ux-ui_vision.md) | Designfilosofi, kärnvyer, komponentkatalog, personas och designprompter. |
+| [prestudy.md](prestudy.md) | Overall pre-study: background, purpose, target audience, MVP concept and competitive analysis. |
+| [project-plan_requirements.md](project-plan_requirements.md) | Requirements matrix (MoSCoW), development phases and test strategy. |
+| [user-stories.md](user-stories.md) | Epics and user stories with Given/When/Then acceptance criteria derived from the requirements. |
+| [ux-ui_vision.md](ux-ui_vision.md) | Design philosophy, core views, component catalogue, personas and design prompts. |
 
-### Lager 2 — Arkitektur och kvalitet (hur)
-| Dokument | Syfte |
+### Layer 2 — Architecture and quality (how)
+| Document | Purpose |
 | --- | --- |
-| [architecture.md](architecture.md) | Teknisk arkitektur, C4-diagram, dataflöden, datamodell, IaC och CI/CD. |
-| [non-functional-requirements.md](non-functional-requirements.md) | Icke-funktionella krav: prestanda, tillgänglighet, säkerhet, accessibility, i18n. |
-| [gdpr.md](gdpr.md) | GDPR-strategi, cookie-hantering och användarrättigheter. |
-| [dpia.md](dpia.md) | Data Protection Impact Assessment enligt GDPR Artikel 35. |
+| [architecture.md](architecture.md) | Technical architecture, C4 diagrams, data flows, data model, IaC and CI/CD. |
+| [non-functional-requirements.md](non-functional-requirements.md) | Non-functional requirements: performance, availability, security, accessibility, i18n. |
+| [gdpr.md](gdpr.md) | GDPR strategy, cookie handling and user rights. |
+| [dpia.md](dpia.md) | Data Protection Impact Assessment per GDPR Article 35. |
 
-### Lager 3 — Styrning och beslutsstöd (varför)
-| Dokument | Syfte |
+### Layer 3 — Governance and decision support (why)
+| Document | Purpose |
 | --- | --- |
-| [risk-register.md](risk-register.md) | Riskregister med sannolikhet, konsekvens, mitigering och ägare. |
-| [cost-estimate.md](cost-estimate.md) | Kostnadsuppskattning för GCP, Neon och kringtjänster. |
-| [open-decisions.md](open-decisions.md) | Logg över öppna och stängda arkitekturbeslut (ADR-light). |
-| [glossary.md](glossary.md) | Ordlista över termer, akronymer och produktspecifika begrepp. |
+| [risk-register.md](risk-register.md) | Risk register with likelihood, impact, mitigation and owner. |
+| [cost-estimate.md](cost-estimate.md) | Cost estimate for GCP, Neon and supporting services. |
+| [open-decisions.md](open-decisions.md) | Log of open and closed architecture decisions (ADR-light). |
+| [glossary.md](glossary.md) | Glossary of terms, acronyms and product-specific concepts. |
 
-## Hur du läser förstudien
+## How to read the pre-study
 
-* **Är du ny i projektet?** Börja med [prestudy.md](prestudy.md) och [glossary.md](glossary.md). Gå sedan vidare till [ux-ui_vision.md](ux-ui_vision.md) för en känsla av slutprodukten.
-* **Ska du bygga?** Läs [architecture.md](architecture.md), [non-functional-requirements.md](non-functional-requirements.md) och [project-plan_requirements.md](project-plan_requirements.md) i den ordningen. Backloggen för utvecklingsarbetet finns i [user-stories.md](user-stories.md) och som GitHub-issues (kan skapas via [scripts/create-github-issues.sh](scripts/create-github-issues.sh), se [scripts/README.md](scripts/README.md)).
-* **Granskar du säkerhet eller juridik?** Läs [gdpr.md](gdpr.md) och [dpia.md](dpia.md) tillsammans. Riskregistret i [risk-register.md](risk-register.md) kompletterar bilden.
-* **Granskar du finansiering eller styrning?** [cost-estimate.md](cost-estimate.md), [risk-register.md](risk-register.md) och [open-decisions.md](open-decisions.md) ger underlag för go/no-go-beslut.
+* **New to the project?** Start with [prestudy.md](prestudy.md) and [glossary.md](glossary.md). Then move on to [ux-ui_vision.md](ux-ui_vision.md) to get a feel for the final product.
+* **Going to build?** Read [architecture.md](architecture.md), [non-functional-requirements.md](non-functional-requirements.md) and [project-plan_requirements.md](project-plan_requirements.md) in that order. The development backlog lives in [user-stories.md](user-stories.md) and as GitHub issues (can be created via [scripts/create-github-issues.sh](scripts/create-github-issues.sh), see [scripts/README.md](scripts/README.md)).
+* **Reviewing security or legal?** Read [gdpr.md](gdpr.md) and [dpia.md](dpia.md) together. The risk register in [risk-register.md](risk-register.md) completes the picture.
+* **Reviewing funding or governance?** [cost-estimate.md](cost-estimate.md), [risk-register.md](risk-register.md) and [open-decisions.md](open-decisions.md) provide the basis for go/no-go decisions.
 
-## Avgränsningar för förstudien
+## Scope of the pre-study
 
-Förstudien beskriver MVP-scope och näraliggande backlog. Specifikt ingår inte:
+The pre-study describes the MVP scope and the adjacent backlog. Specifically, it does **not** cover:
 
-* Detaljerad implementation, klassdiagram eller kodexempel utöver det som krävs för att illustrera arkitektur.
-* Marknadsplan eller lanseringskampanj.
-* Detaljerad analys av butiksformat utöver ICA. Övriga butikers format hanteras via plugin-arkitekturen (krav K20).
+* Detailed implementation, class diagrams or code examples beyond what is needed to illustrate the architecture.
+* Marketing plan or launch campaign.
+* Detailed analysis of store formats other than ICA. Other stores are handled through the plug-in architecture (requirement K20).
 
-## Definition of Done — förstudien är klar när
+## Definition of Done — the pre-study is complete when
 
-* [x] Vision, målgrupp och MVP-scope är dokumenterade och konsistenta över alla dokument.
-* [x] Funktionella krav är beskrivna i en MoSCoW-matris med tydliga K-nummer.
-* [x] Icke-funktionella krav är beskrivna med mätbara mål.
-* [x] Arkitekturen är illustrerad med C4-modellen åtminstone till container-nivå.
-* [x] Asynkrona dataflöden är illustrerade med sekvensdiagram.
-* [x] Datamodellen är beskriven på entitetsnivå och täcker MVP-krav samt valda Should/Could-krav.
-* [x] CI/CD och PR-miljöer har en beskriven flödesbeskrivning.
-* [x] GDPR-strategi och DPIA finns dokumenterade.
-* [x] Riskregister med mitigeringar är upprättat.
-* [x] Kostnadsuppskattning för MVP finns på plats.
-* [x] Öppna beslut är listade så att de inte tappas bort i implementationsfasen.
+* [x] Vision, target audience and MVP scope are documented and consistent across all documents.
+* [x] Functional requirements are described in a MoSCoW matrix with clear K numbers.
+* [x] Non-functional requirements are described with measurable goals.
+* [x] The architecture is illustrated with the C4 model at least to container level.
+* [x] Asynchronous data flows are illustrated with sequence diagrams.
+* [x] The data model is described at entity level and covers MVP requirements as well as selected Should/Could requirements.
+* [x] CI/CD and PR environments have a documented flow description.
+* [x] GDPR strategy and DPIA are documented.
+* [x] A risk register with mitigations is in place.
+* [x] A cost estimate for the MVP is available.
+* [x] Open decisions are listed so that they are not lost during the implementation phase.
 
-## Bidra till förstudien
+## Contributing to the pre-study
 
-Förstudien lever i ett Git-repository och versionshanteras som vilken kodbas som helst.
+The pre-study lives in a Git repository and is version-controlled like any code base.
 
-* Ändringar görs via Pull Request mot `main`.
-* Större ändringar (nya kapitel, ändrad arkitektur, nya krav) ska refereras i [open-decisions.md](open-decisions.md).
-* Mindre ändringar (stavning, formatering, tydligare formuleringar) kan godkännas direkt.
+* Changes are made via Pull Request against `main`.
+* Larger changes (new chapters, modified architecture, new requirements) must be referenced in [open-decisions.md](open-decisions.md).
+* Smaller changes (spelling, formatting, clearer wording) can be approved directly.
