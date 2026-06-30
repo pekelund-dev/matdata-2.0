@@ -362,20 +362,20 @@ To get the user to *want* to upload receipts, small reward elements can be added
 > *Now, replace the content area with the 'Dashboard' view. Use the components we defined earlier. Generate plain HTML with Tailwind CSS.*
 >
 > *The Dashboard needs the following sections, stacking vertically on mobile:*
-> *1. A welcome message 'Hej [Name]!'.*
-> *2. Two 'Stat Cards' side by side (or stacked on very small screens): One for 'Månadens utgifter' (Month's expenses) and one for 'Ditt Inflationsindex' (Your inflation index).*
-> *3. A special thematic card called 'Moms-kollen' (The VAT Checker). This card should have a slightly different, attention-grabbing background (maybe a very subtle gradient). Inside it, show a quick summary like 'ICA Maxi has lowered prices on 15 of your top 20 items'. Add a button saying 'Se hela analysen'.*
-> *4. A 'Senaste kvittona' (Recent receipts) section. Show a simple list of 3 receipt items (Store name, Date, Total Amount).*
+> *1. A welcome message 'Hi [Name]!'.*
+> *2. Two 'Stat Cards' side by side (or stacked on very small screens): One for 'This month's expenses' and one for 'Your inflation index'.*
+> *3. A special thematic card called 'Moms-kollen' (The VAT Checker). This card should have a slightly different, attention-grabbing background (maybe a very subtle gradient). Inside it, show a quick summary like 'ICA Maxi has lowered prices on 15 of your top 20 items'. Add a button saying 'See the full analysis'.*
+> *4. A 'Recent receipts' section. Show a simple list of 3 receipt items (Store name, Date, Total Amount).*
 
 ### 8.4 Prompt 4: Search and price history (product detail view)
 **Purpose:** Design the view where you see the price history for a specific item and the shrinkflation warning.
 
-> *Create a 'Product Detail' view for a specific grocery item (e.g., 'Svensk Blandfärs 500g'). Generate plain HTML with Tailwind CSS.*
+> *Create a 'Product Detail' view for a specific grocery item (e.g., 'Swedish ground beef 500g'). Generate plain HTML with Tailwind CSS.*
 >
 > *Elements needed:*
 > *1. A prominent back button at the top.*
 > *2. The Product Name as a large heading, with the current best price below it.*
-> *3. A 'Shrinkflation Warning' banner (using amber/yellow colors and an alert icon). The text should say 'Varning: Förpackningen har minskat från 500g till 450g men priset är detsamma.'*
+> *3. A 'Shrinkflation Warning' banner (using amber/yellow colors and an alert icon). The text should say 'Warning: The package has decreased from 500g to 450g but the price is the same.'*
 > *4. Place the 'Chart Container' component here (for the price history graph).*
 > *5. Place the 'Data Table' component below the chart to display the historical purchases of this item in detail (Columns: Date, Store, Quantity, Price). Use the green/red badges in the Price column to indicate if it was a good deal.*
 
@@ -384,9 +384,9 @@ To get the user to *want* to upload receipts, small reward elements can be added
 
 > *Finally, I need the UI for the Receipt Upload modal/area. Since I am using HTMX to poll the server, I need three distinct UI states. Please provide the HTML/Tailwind for all three states, stacked on top of each other so I can see them.*
 >
-> *State 1: Upload Prompt. A drag-and-drop zone with a dashed border, an upload icon, and text saying 'Välj PDF-kvitto från Kivra'.*
-> *State 2: Processing (Loading). The dashed box is replaced by a centered loading spinner (you can use an SVG or Tailwind animation) and the text 'Extraherar priser...'.*
-> *State 3: Success. A green checkmark icon, confetti-like aesthetic (just visually happy), and text saying 'Klart! 34 varor sparade.' with a button 'Se kvittot'.*
+> *State 1: Upload Prompt. A drag-and-drop zone with a dashed border, an upload icon, and text saying 'Choose PDF receipt from Kivra'.*
+> *State 2: Processing (Loading). The dashed box is replaced by a centered loading spinner (you can use an SVG or Tailwind animation) and the text 'Extracting prices...'.*
+> *State 3: Success. A green checkmark icon, confetti-like aesthetic (just visually happy), and text saying 'Done! 34 items saved.' with a button 'See the receipt'.*
 
 ## 9. Workflow and implementation <a name="workflow"></a>
 

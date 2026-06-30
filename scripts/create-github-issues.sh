@@ -221,13 +221,13 @@ See the DoD checklist in [user-stories.md §1.3](../blob/main/user-stories.md#13
 }
 
 epic_body() {
-  local epic_id="$1" goal="$2" krav="$3" nfr="$4" phase="$5" stories="$6"
+  local epic_id="$1" goal="$2" requirements="$3" nfr="$4" phase="$5" stories="$6"
   cat <<EOF
 **Epic $epic_id**
 
 **Goal:** $goal
 
-**Primary K-requirements:** $krav
+**Primary K-requirements:** $requirements
 **NFR:** $nfr
 **Phase:** $phase
 
