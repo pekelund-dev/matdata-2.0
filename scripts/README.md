@@ -1,55 +1,55 @@
 # scripts/
 
-Hjälpskript för administration av Matdata 2.0-repot. Skripten är tänkta att köras **lokalt** på din maskin, inte i CI.
+Helper scripts for administering the Matdata 2.0 repo. The scripts are intended to be run **locally** on your machine, not in CI.
 
 ## `create-github-issues.sh`
 
-Skapar GitHub-issues (epics) och sub-issues (user stories) baserat på [user-stories.md](../user-stories.md) genom att kalla din lokala installation av [`gh`](https://cli.github.com/).
+Creates GitHub issues (epics) and sub-issues (user stories) based on [user-stories.md](../user-stories.md) by calling your local installation of [`gh`](https://cli.github.com/).
 
-### Vad skriptet gör
-1. **Labels** — säkerställer att följande labels finns i target-repot (skapar de som saknas, rör inte de som finns):
+### What the script does
+1. **Labels** — ensures that the following labels exist in the target repo (creates those that are missing, does not touch those that exist):
    - `epic`, `user-story`
    - `prio:must`, `prio:should`, `prio:could`
    - `area:infra`, `area:auth`, `area:parsing`, `area:frontend`, `area:gdpr`, `area:observability`, `area:crowdsource`, `area:insights`, `area:design-a11y`
-2. **Epics** — skapar 9 parent-issues, en per epic (Epic 1–9), med label `epic` + relevant `area:*`.
-3. **Sub-issues** — skapar 31 issues, en per user story (US-1.1 … US-9.3), med labels `user-story`, prioritet och area. Varje story länkas som sub-issue under sin epic via GitHubs `sub_issues`-API.
+2. **Epics** — creates 9 parent issues, one per epic (Epic 1–9), with label `epic` + the relevant `area:*`.
+3. **Sub-issues** — creates 31 issues, one per user story (US-1.1 … US-9.3), with labels `user-story`, priority and area. Each story is linked as a sub-issue under its epic via GitHub's `sub_issues` API.
 
-Skriptet är **idempotent**: körs det två gånger skapas inga dubbletter — befintliga issues hoppas över (matchat på exakt titel).
+The script is **idempotent**: if run twice, no duplicates are created — existing issues are skipped (matched on exact title).
 
-### Förkrav
-* `gh` ≥ 2.40, inloggad: `gh auth status`
-* `jq` (för att hantera issue-ID:n vid sub-issue-länkning)
-* Skrivrättigheter på issues och labels i target-repot
+### Prerequisites
+* `gh` ≥ 2.40, signed in: `gh auth status`
+* `jq` (to handle issue IDs when linking sub-issues)
+* Write permissions on issues and labels in the target repo
 
-### Användning
+### Usage
 
 ```bash
-# 1. Dry-run (default) — visar vad som SKULLE skapas, utan att röra GitHub
+# 1. Dry-run (default) — shows what WOULD be created, without touching GitHub
 ./scripts/create-github-issues.sh
 
-# 2. På riktigt
+# 2. For real
 ./scripts/create-github-issues.sh --apply
 
-# 3. Annat target-repo
+# 3. Different target repo
 ./scripts/create-github-issues.sh --apply -R pekelund-dev/matdata-2.0
 
-# 4. Hjälp
+# 4. Help
 ./scripts/create-github-issues.sh --help
 ```
 
-### Variabler
-| Variabel | Default | Syfte |
+### Variables
+| Variable | Default | Purpose |
 | --- | --- | --- |
-| `REPO` | `pekelund-dev/matdata-2.0` | Target-repo. Kan också sättas via `-R` / `--repo`. |
+| `REPO` | `pekelund-dev/matdata-2.0` | Target repo. Can also be set via `-R` / `--repo`. |
 
 ### Sub-issues API
-Skriptet använder GitHubs `POST /repos/{owner}/{repo}/issues/{issue_number}/sub_issues`-endpoint. Om endpointen inte är tillgänglig på ditt repo (sub-issues kräver att funktionen är aktiverad) faller skriptet tillbaka på att lägga till en kommentar med `Parent epic: #<n>` på sub-issuet så att kopplingen ändå syns.
+The script uses GitHub's `POST /repos/{owner}/{repo}/issues/{issue_number}/sub_issues` endpoint. If the endpoint is not available on your repo (sub-issues require the feature to be enabled) the script falls back to adding a comment with `Parent epic: #<n>` on the sub-issue so that the relationship is still visible.
 
-### Felsökning
-* **"gh är inte inloggad"** → kör `gh auth login` (välj `github.com`, `HTTPS`, `Login with web browser`).
-* **"Kan inte se repot"** → verifiera `gh repo view <owner>/<repo>` och att tokenen har `repo`-scope.
-* **Issues syns inte i UI:t** → labels skapas asynkront av GitHub; uppdatera issue-vyn efter några sekunder.
-* **Hoppa över redan skapade** → skriptet jämför exakta titlar. Om du redan har skapat en epic manuellt med samma titel hoppas den över. Vill du tvinga ny-skapning får du först stänga eller döpa om den befintliga.
+### Troubleshooting
+* **\"gh is not signed in\"** → run `gh auth login` (choose `github.com`, `HTTPS`, `Login with web browser`).
+* **\"Cannot see the repo\"** → verify with `gh repo view <owner>/<repo>` and that the token has the `repo` scope.
+* **Issues do not show up in the UI** → labels are created asynchronously by GitHub; refresh the issue view after a few seconds.
+* **Skipping already-created** → the script compares exact titles. If you have already manually created an epic with the same title, it is skipped. If you want to force a re-creation, you must first close or rename the existing one.
 
-### Källkod och felrapporter
-Skriptet ligger i `scripts/create-github-issues.sh`. Förbättringar välkomnas via PR.
+### Source and bug reports
+The script is at `scripts/create-github-issues.sh`. Improvements are welcome via PR.
